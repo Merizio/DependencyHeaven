@@ -3,7 +3,7 @@
 Sistema de gerenciamento de tarefas com designação de dependências.
 
 ## Diagrama de Classes
-![Diagrama de Classes Astah](DependencyHeaven.png)
+![Diagrama de Classes Mermaid](diagrama_classes.png)
 
 ## Ferramentas Escolhidas
 
