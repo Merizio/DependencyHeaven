@@ -124,13 +124,17 @@ public class Tarefa {
      * Reabre a tarefa (volta para PENDENTE) e bloqueia automaticamente
      * todas as tarefas que dependem dela.
      */
-    public void reabrir() {
-        this.estado = Estado.PENDENTE;
-
-        for (Tarefa dependente : this.dependentes) {
-            dependente.estado = Estado.BLOQUEADO;
-        }
+public void reabrir() {
+    if (this.estado != Estado.FINALIZADO) {
+        throw new IllegalStateException("A tarefa só pode ser reaberta quando estiver FINALIZADA.");
     }
+
+    this.estado = Estado.PENDENTE;
+
+    for (Tarefa dependente : this.dependentes) {
+        dependente.estado = Estado.BLOQUEADO;
+    }
+}
 
     // =========================================================================
     // Métodos Privados de Apoio
