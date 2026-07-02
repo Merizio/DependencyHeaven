@@ -15,6 +15,8 @@ import jakarta.persistence.Table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "tarefa")
@@ -53,6 +55,9 @@ public class Tarefa {
     )
     private List<Tarefa> dependencias = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "dependencias")
+    private List<Tarefa> dependentes = new ArrayList<>();
+
     protected Tarefa() {
         // Construtor padrão exigido pelo JPA
     }
@@ -61,7 +66,120 @@ public class Tarefa {
         this.titulo = titulo;
     }
 
+    // =========================================================================
+    // Métodos de Negócio
+    // =========================================================================
+
+    /**
+     * Adiciona uma dependência (pré-requisito) a esta tarefa.
+     * Valida o DAG para impedir ciclos e ajusta o estado se necessário.
+     */
+    public void adicionarDependencia(Tarefa dependencia) {
+        if (dependencia == null) {
+            throw new IllegalArgumentException("A dependência não pode ser nula.");
+        }
+        if (this.dependencias.contains(dependencia)) {
+            return; // Evita duplicação silenciosamente (ou poderíamos lançar exceção)
+        }
+
+        validarCiclo(dependencia);
+        this.dependencias.add(dependencia);
+        dependencia.dependentes.add(this);
+
+        if (dependencia.getEstado() != Estado.FINALIZADO) {
+            this.estado = Estado.BLOQUEADO;
+        }
+    }
+
+    /**
+     * Inicia a tarefa (muda para EM_ANDAMENTO).
+     * Exige pelo menos um membro e que a tarefa não esteja bloqueada.
+     */
+    public void iniciar() {
+        if (this.membros.isEmpty()) {
+            throw new IllegalStateException(
+                "A tarefa não pode ser iniciada sem pelo menos um membro associado.");
+        }
+        if (this.estado == Estado.BLOQUEADO) {
+            throw new IllegalStateException(
+                "A tarefa não pode ser iniciada enquanto estiver BLOQUEADA.");
+        }
+        this.estado = Estado.EM_ANDAMENTO;
+    }
+
+    /**
+     * Finaliza a tarefa e propaga o desbloqueio para as tarefas dependentes.
+     */
+    public void finalizar() {
+        this.estado = Estado.FINALIZADO;
+
+        for (Tarefa dependente : this.dependentes) {
+            if (dependente.todasDependenciasFinalizadas()) {
+                dependente.estado = Estado.PENDENTE;
+            }
+        }
+    }
+
+    /**
+     * Reabre a tarefa (volta para PENDENTE) e bloqueia automaticamente
+     * todas as tarefas que dependem dela.
+     */
+public void reabrir() {
+    if (this.estado != Estado.FINALIZADO) {
+        throw new IllegalStateException("A tarefa só pode ser reaberta quando estiver FINALIZADA.");
+    }
+
+    this.estado = Estado.PENDENTE;
+
+    for (Tarefa dependente : this.dependentes) {
+        dependente.estado = Estado.BLOQUEADO;
+    }
+}
+
+    // =========================================================================
+    // Métodos Privados de Apoio
+    // =========================================================================
+
+    /**
+     * Valida se adicionar {@code novaDependencia} criaria um ciclo no grafo.
+     * Faz uma busca em profundidade (DFS) nas dependências de {@code novaDependencia}
+     * verificando se alguma delas é {@code this}.
+     */
+    private void validarCiclo(Tarefa novaDependencia) {
+        if (novaDependencia == this) {
+            throw new IllegalStateException(
+                "Uma tarefa não pode depender de si mesma.");
+        }
+        verificarCicloRecursivo(novaDependencia, this, new HashSet<>());
+    }
+
+    private void verificarCicloRecursivo(Tarefa atual, Tarefa alvo, Set<Tarefa> visitados) {
+        if (visitados.contains(atual)) {
+            return; // Já visitou essa rota, evita reprocessamento ou loop infinito
+        }
+        visitados.add(atual);
+
+        for (Tarefa dep : atual.dependencias) {
+            if (dep == alvo) {
+                throw new IllegalStateException(
+                    "Dependência cíclica detectada! Adicionar esta dependência violaria a regra de DAG.");
+            }
+            verificarCicloRecursivo(dep, alvo, visitados);
+        }
+    }
+
+    private boolean todasDependenciasFinalizadas() {
+        for (Tarefa dep : this.dependencias) {
+            if (dep.getEstado() != Estado.FINALIZADO) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // =========================================================================
     // Getters e Setters
+    // =========================================================================
 
     public Long getId() {
         return id;
@@ -113,5 +231,9 @@ public class Tarefa {
 
     public void setDependencias(List<Tarefa> dependencias) {
         this.dependencias = dependencias;
+    }
+
+    public List<Tarefa> getDependentes() {
+        return dependentes;
     }
 }
