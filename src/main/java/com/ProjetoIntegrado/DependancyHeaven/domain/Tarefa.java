@@ -53,6 +53,9 @@ public class Tarefa {
     )
     private List<Tarefa> dependencias = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "dependencias")
+    private List<Tarefa> dependentes = new ArrayList<>();
+
     protected Tarefa() {
         // Construtor padrão exigido pelo JPA
     }
@@ -61,7 +64,104 @@ public class Tarefa {
         this.titulo = titulo;
     }
 
+    // =========================================================================
+    // Métodos de Negócio
+    // =========================================================================
+
+    /**
+     * Adiciona uma dependência (pré-requisito) a esta tarefa.
+     * Valida o DAG para impedir ciclos e ajusta o estado se necessário.
+     */
+    public void adicionarDependencia(Tarefa dependencia) {
+        validarCiclo(dependencia);
+        this.dependencias.add(dependencia);
+        dependencia.dependentes.add(this);
+
+        if (dependencia.getEstado() != Estado.FINALIZADO) {
+            this.estado = Estado.BLOQUEADO;
+        }
+    }
+
+    /**
+     * Inicia a tarefa (muda para EM_ANDAMENTO).
+     * Exige pelo menos um membro e que a tarefa não esteja bloqueada.
+     */
+    public void iniciar() {
+        if (this.membros.isEmpty()) {
+            throw new IllegalStateException(
+                "A tarefa não pode ser iniciada sem pelo menos um membro associado.");
+        }
+        if (this.estado == Estado.BLOQUEADO) {
+            throw new IllegalStateException(
+                "A tarefa não pode ser iniciada enquanto estiver BLOQUEADA.");
+        }
+        this.estado = Estado.EM_ANDAMENTO;
+    }
+
+    /**
+     * Finaliza a tarefa e propaga o desbloqueio para as tarefas dependentes.
+     */
+    public void finalizar() {
+        this.estado = Estado.FINALIZADO;
+
+        for (Tarefa dependente : this.dependentes) {
+            if (dependente.todasDependenciasFinalizadas()) {
+                dependente.estado = Estado.PENDENTE;
+            }
+        }
+    }
+
+    /**
+     * Reabre a tarefa (volta para PENDENTE) e bloqueia automaticamente
+     * todas as tarefas que dependem dela.
+     */
+    public void reabrir() {
+        this.estado = Estado.PENDENTE;
+
+        for (Tarefa dependente : this.dependentes) {
+            dependente.estado = Estado.BLOQUEADO;
+        }
+    }
+
+    // =========================================================================
+    // Métodos Privados de Apoio
+    // =========================================================================
+
+    /**
+     * Valida se adicionar {@code novaDependencia} criaria um ciclo no grafo.
+     * Faz uma busca em profundidade (DFS) nas dependências de {@code novaDependencia}
+     * verificando se alguma delas é {@code this}.
+     */
+    private void validarCiclo(Tarefa novaDependencia) {
+        if (novaDependencia == this) {
+            throw new IllegalStateException(
+                "Uma tarefa não pode depender de si mesma.");
+        }
+        verificarCicloRecursivo(novaDependencia, this);
+    }
+
+    private void verificarCicloRecursivo(Tarefa atual, Tarefa alvo) {
+        for (Tarefa dep : atual.dependencias) {
+            if (dep == alvo) {
+                throw new IllegalStateException(
+                    "Dependência cíclica detectada! Adicionar esta dependência violaria a regra de DAG.");
+            }
+            verificarCicloRecursivo(dep, alvo);
+        }
+    }
+
+    private boolean todasDependenciasFinalizadas() {
+        for (Tarefa dep : this.dependencias) {
+            if (dep.getEstado() != Estado.FINALIZADO) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // =========================================================================
     // Getters e Setters
+    // =========================================================================
 
     public Long getId() {
         return id;
@@ -113,5 +213,9 @@ public class Tarefa {
 
     public void setDependencias(List<Tarefa> dependencias) {
         this.dependencias = dependencias;
+    }
+
+    public List<Tarefa> getDependentes() {
+        return dependentes;
     }
 }
