@@ -15,6 +15,8 @@ import jakarta.persistence.Table;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "tarefa")
@@ -73,6 +75,13 @@ public class Tarefa {
      * Valida o DAG para impedir ciclos e ajusta o estado se necessário.
      */
     public void adicionarDependencia(Tarefa dependencia) {
+        if (dependencia == null) {
+            throw new IllegalArgumentException("A dependência não pode ser nula.");
+        }
+        if (this.dependencias.contains(dependencia)) {
+            return; // Evita duplicação silenciosamente (ou poderíamos lançar exceção)
+        }
+
         validarCiclo(dependencia);
         this.dependencias.add(dependencia);
         dependencia.dependentes.add(this);
@@ -137,16 +146,21 @@ public class Tarefa {
             throw new IllegalStateException(
                 "Uma tarefa não pode depender de si mesma.");
         }
-        verificarCicloRecursivo(novaDependencia, this);
+        verificarCicloRecursivo(novaDependencia, this, new HashSet<>());
     }
 
-    private void verificarCicloRecursivo(Tarefa atual, Tarefa alvo) {
+    private void verificarCicloRecursivo(Tarefa atual, Tarefa alvo, Set<Tarefa> visitados) {
+        if (visitados.contains(atual)) {
+            return; // Já visitou essa rota, evita reprocessamento ou loop infinito
+        }
+        visitados.add(atual);
+
         for (Tarefa dep : atual.dependencias) {
             if (dep == alvo) {
                 throw new IllegalStateException(
                     "Dependência cíclica detectada! Adicionar esta dependência violaria a regra de DAG.");
             }
-            verificarCicloRecursivo(dep, alvo);
+            verificarCicloRecursivo(dep, alvo, visitados);
         }
     }
 

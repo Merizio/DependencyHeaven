@@ -91,6 +91,23 @@ class TarefaTest {
             assertEquals(Estado.BLOQUEADO, tarefa.getEstado(),
                 "Tarefa EM_ANDAMENTO deveria ir para BLOQUEADO ao receber dependência não finalizada");
         }
+
+        @Test
+        void naoDeveAdicionarDependenciaNula() {
+            assertThrows(IllegalArgumentException.class, () -> tarefa.adicionarDependencia(null),
+                "Deveria lançar exceção ao adicionar dependência nula");
+        }
+
+        @Test
+        void naoDeveDuplicarDependencia() {
+            Tarefa dependencia = new Tarefa("Dependência");
+            
+            tarefa.adicionarDependencia(dependencia);
+            tarefa.adicionarDependencia(dependencia); // Tentativa de adicionar de novo
+
+            assertEquals(1, tarefa.getDependencias().size(), "Não deveria duplicar a dependência na lista");
+            assertEquals(1, dependencia.getDependentes().size(), "Não deveria duplicar a tarefa na lista de dependentes");
+        }
     }
 
     // =========================================================================
