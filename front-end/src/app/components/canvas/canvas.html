@@ -1,0 +1,33 @@
+<main class="canvas-area">
+  <div class="canvas-header">
+    <span class="template-title">Template 1</span>
+  </div>
+
+  <div class="dependency-board">
+    
+    <!-- Loop 1: Desenha as colunas baseadas na matriz do TS -->
+    <div *ngFor="let coluna of colunas" class="dependency-column">
+      
+      <!-- Loop 2: Renderiza os cartões dentro dessa etapa -->
+      <div *ngFor="let tarefa of coluna" class="task-card">
+        <div class="task-header">
+          <span class="task-name">{{ tarefa.titulo }}</span>
+          <span class="status-indicator"
+                [ngClass]="{
+                  'green': tarefa.status === 'FINALIZADO',
+                  'yellow': tarefa.status === 'EM_ANDAMENTO',
+                  'red': tarefa.status === 'BLOQUEADO'
+                }">
+          </span>
+        </div>
+        <div class="task-body">
+          <span class="task-descript">{{ tarefa.descricao }}</span>
+        </div>
+      </div>
+      
+    </div>
+
+  </div>
+
+  <button class="fab-add" (click)="abrirModalNovaTarefa()">+</button>
+</main>

@@ -1,0 +1,24 @@
+<aside class="sidebar">
+  <div class="header">
+    <h2>Paraiso das Dependencias</h2>
+    <div class="user-profile">
+      <div class="avatar"></div>
+      <span>{{ nomeUsuario }}</span> 
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <h3>Meus Templates</h3>
+    <ul class="template-list">
+      <li *ngFor="let t of templates" [class.active]="t.ativo">
+        {{ t.id }} - {{ t.nome }}
+      </li>
+    </ul>
+    <button class="btn-create">Criar Novo +</button>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn-config">Configurações</button>
+    <button class="btn-exit">Sair</button>
+  </div>
+</aside>
