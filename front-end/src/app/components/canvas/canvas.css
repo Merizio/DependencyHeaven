@@ -1,0 +1,84 @@
+.canvas-area { 
+  flex: 1; 
+  position: relative; 
+  overflow: auto; 
+  background-color: #fcfcfc; /* Fundo levemente mais claro para destacar as linhas */
+  height: 100%; 
+}
+
+.canvas-header { 
+  position: absolute; 
+  top: 20px; 
+  left: 20px; 
+  background-color: #e0e0e0; 
+  padding: 10px 20px; 
+  border-radius: 4px; 
+  font-weight: bold; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+/* O container do grafo */
+.dependency-board {
+  display: flex;
+  flex-direction: row;
+  padding: 100px 0;
+  height: 100%;
+  align-items: stretch; /* Estica as colunas até o final da tela */
+}
+
+/* Cada etapa/nível de execução */
+.dependency-column {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Distância vertical entre blocos da mesma etapa */
+  padding: 0 50px; /* Distância horizontal entre etapas */
+  border-right: 2px solid #e0e0e0; /* As linhas verticais do Figma */
+  align-items: center; /* Centraliza os cartões na coluna */
+  min-width: 200px;
+}
+
+/* Remove a linha da última coluna para ficar elegante */
+.dependency-column:last-child {
+  border-right: none;
+}
+
+/* O design do Cartão */
+.task-card { 
+  width: 140px; 
+  height: 150px; 
+  background-color: #f7f3ff; /* Tom levemente roxo/frio como na sua imagem */
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+  padding: 15px; 
+  cursor: pointer; 
+  transition: transform 0.2s; 
+}
+
+.task-card:hover { transform: scale(1.05); }
+
+.task-header { display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-name { 
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333
+}
+
+.task-descript {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: small;
+  color:#504f4f;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* Indicadores de Status (Bolinhas) */
+.status-indicator { width: 14px; height: 14px; border-radius: 50%; }
+.green { background-color: #17e40e; } /* Verde fluorescente do design */
+.yellow { background-color: #ffb700; } 
+.red { background-color: #ff0000; }
+
+.fab-add { position: absolute; bottom: 30px; right: 30px; width: 50px; height: 50px; background-color: white; border: 1px solid #ccc; font-size: 24px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.15); z-index: 10; }
