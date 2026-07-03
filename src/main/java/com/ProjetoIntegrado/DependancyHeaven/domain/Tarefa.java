@@ -124,17 +124,32 @@ public class Tarefa {
      * Reabre a tarefa (volta para PENDENTE) e bloqueia automaticamente
      * todas as tarefas que dependem dela.
      */
-public void reabrir() {
-    if (this.estado != Estado.FINALIZADO) {
-        throw new IllegalStateException("A tarefa só pode ser reaberta quando estiver FINALIZADA.");
+    public void reabrir() {
+        if (this.estado != Estado.FINALIZADO) {
+            throw new IllegalStateException("A tarefa só pode ser reaberta quando estiver FINALIZADA.");
+        }
+
+        this.estado = Estado.PENDENTE;
+
+        for (Tarefa dependente : this.dependentes) {
+            dependente.estado = Estado.BLOQUEADO;
+        }
     }
 
-    this.estado = Estado.PENDENTE;
+    /**
+     * Remove uma dependência e reavalia se a tarefa pode voltar para PENDENTE.
+     */
+    public void removerDependencia(Tarefa dependencia) {
+        if (dependencia == null) {
+            throw new IllegalArgumentException("A dependência não pode ser nula.");
+        }
+        this.dependencias.remove(dependencia);
+        dependencia.dependentes.remove(this);
 
-    for (Tarefa dependente : this.dependentes) {
-        dependente.estado = Estado.BLOQUEADO;
+        if (this.estado == Estado.BLOQUEADO && todasDependenciasFinalizadas()) {
+            this.estado = Estado.PENDENTE;
+        }
     }
-}
 
     // =========================================================================
     // Métodos Privados de Apoio
