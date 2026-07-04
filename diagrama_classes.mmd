@@ -1,0 +1,35 @@
+classDiagram
+    direction LR
+
+    class Usuario {
+        - nome : String
+        - email : String
+        - senha : String
+    }
+
+    class Template {
+        - nome : String
+    }
+
+    class Membro {
+        - nome : String
+    }
+
+    class Tarefa {
+        - titulo : String
+        - descricao : String
+        - estado : Estado
+    }
+
+    class Estado {
+        <<enumeration>>
+        PENDENTE
+        EM_ANDAMENTO
+        BLOQUEADO
+        FINALIZADO
+    }
+
+    Usuario "1" --> "0..*" Template : Cria
+    Template "1" --> "0..*" Tarefa : Contem
+    Tarefa "0..*" --> "0..*" Membro : Possui
+    Tarefa "0..*" --> "0..*" Tarefa : Depende de / pré-requisito
