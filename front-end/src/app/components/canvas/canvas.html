@@ -9,7 +9,7 @@
     <div *ngFor="let coluna of colunas" class="dependency-column">
       
       <!-- Loop 2: Renderiza os cartões dentro dessa etapa -->
-      <div *ngFor="let tarefa of coluna" class="task-card">
+      <div *ngFor="let tarefa of coluna" class="task-card" (click)="abrirModalNovaTarefa(tarefa)">
         <div class="task-header">
           <span class="task-name">{{ tarefa.titulo }}</span>
           <span class="status-indicator"
@@ -29,5 +29,15 @@
 
   </div>
 
-  <button class="fab-add" (click)="abrirModalNovaTarefa()">+</button>
+  <button class="fab-add" (click)="abrirModalNovaTarefa(tarefa_click)">+</button>
+  @if (isTaskModalOpen) {
+    <div class="overlay-fantasma">
+        <app-task 
+        [tarefa]="tarefa_click"
+        (avisoFechar)="fecharModalTarefa()"
+        (taskMod)="receberTarefaMod($event)">
+        </app-task>
+    </div>
+  }
+
 </main>

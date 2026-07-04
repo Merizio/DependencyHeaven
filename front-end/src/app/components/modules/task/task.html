@@ -1,0 +1,21 @@
+<div class="task-card">
+
+    <div class="task-header">
+        <input #campoTitulo type="text" class="task-name" placeholder="Nova Tarefa"  [value]="tarefa()?.titulo || 'Nova Tarefa' ">
+        <button class="btn-close" (click)="closeTask()"> X </button>
+    </div>
+
+    <div class="task-body">
+        <textarea #campoDescricao class="task-area" placeholder="Adicionar Descrição...">{{tarefa()?.descricao}}</textarea>
+    </div>
+
+    <div class="task-footer">
+        <div class="left-side">
+            <button class="btn-sec">DEPENDÊNCIAS</button>
+        </div>
+        <div class="right-side">
+            <button class="btn-sec" (click)="finalizarTarefa()" [disabled]="tarefa()?.status !== 'EM_ANDAMENTO'">FINALIZAR</button>
+            <button class="btn-sec" (click)="salvarAlteracoes(campoTitulo.value, campoDescricao.value)">SALVAR</button>
+        </div>
+    </div>
+</div>
