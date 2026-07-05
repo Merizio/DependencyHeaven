@@ -11,7 +11,7 @@
 
     <div class="task-footer">
         <div class="left-side">
-            <button class="btn-sec">DEPENDÊNCIAS</button>
+            <button class="btn-sec" (click)="acionarDependencias()">DEPENDÊNCIAS</button>
         </div>
         <div class="right-side">
             <button class="btn-sec" (click)="finalizarTarefa()" [disabled]="tarefa()?.status !== 'EM_ANDAMENTO'">FINALIZAR</button>

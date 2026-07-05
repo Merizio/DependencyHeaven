@@ -9,6 +9,7 @@ import { Component, input, output } from '@angular/core';
 export class Task {
   tarefa = input<any>(null);
   avisoFechar = output<void>();
+  avisoLista = output<void>();
 
   taskMod = output<any>();
   salvarAlteracoes(novoTitulo: string, novaDescricao: string){
@@ -32,5 +33,10 @@ export class Task {
 
   closeTask(){
     this.avisoFechar.emit();
+  }
+
+  acionarDependencias(){
+    this.avisoLista.emit();
+    console.log('Chamando lista ...');
   }
 }

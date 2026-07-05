@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Task } from '../modules/task/task';
+import { Dependencies } from "../modules/dependencies/dependencies";
 
 @Component({
   selector: 'app-canvas',
-  imports: [CommonModule, Task],
+  imports: [CommonModule, Task, Dependencies],
   templateUrl: './canvas.html',
   styleUrl: './canvas.css',
 })
 export class Canvas implements OnInit {
   newid = 7;
   isTaskModalOpen = false;
+  isTelaDependencias = false;
   tarefa_click: any = null;
   // Simulando as tarefas conectadas conforme a sua imagem
   tarefas = [
@@ -102,5 +104,52 @@ export class Canvas implements OnInit {
     console.log("3. tarefa depois da att:", this.tarefas[index]);
     this.isTaskModalOpen=!this.isTaskModalOpen;
     this.tarefa_click = null;
+  }
+
+  abrirTelaDependencias(){
+    this.isTelaDependencias=!this.isTelaDependencias;
+    console.log('aviso lista recebido ...');
+  }
+
+  fecharListaDependencias(){
+    this.isTelaDependencias = !this.isTelaDependencias;
+    //this.tarefa_click = null;
+    console.log('Fechando lista ...');
+  }
+
+  adicionarDependencia(modified: any){
+    console.log("1. Pacote recebido de add dependencias:", modified);
+
+    const index = this.tarefas.findIndex(t=>t.id === modified.id);
+
+    console.log("2. Id da Tarefa a adicionar:", modified.id);
+
+    if(index !== -1){
+      this.tarefas[index] = modified
+      console.log("4. passei por aqui");
+    }
+
+    this.organizarPorDependencia();
+    console.log("3. tarefa depois da att:", this.tarefas[index]);
+    //this.isTaskModalOpen=!this.isTaskModalOpen;
+    this.tarefa_click = {...modified};
+  }
+
+  removerDependencia(modified: any){
+    console.log("1. Pacote recebido de remove dependencias:", modified);
+
+    const index = this.tarefas.findIndex(t=>t.id === modified.id);
+
+    console.log("2. Id da Tarefa a adicionar:", modified.id);
+
+    if(index !== -1){
+      this.tarefas[index] = modified
+      console.log("4. passei por aqui");
+    }
+
+    this.organizarPorDependencia();
+    console.log("3. tarefa depois da att:", this.tarefas[index]);
+    //this.isTaskModalOpen=!this.isTaskModalOpen;
+    this.tarefa_click = {...modified};
   }
 }

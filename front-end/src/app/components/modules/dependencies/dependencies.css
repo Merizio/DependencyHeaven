@@ -1,0 +1,75 @@
+.tasks-list{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;            /* Dá um respiro de 16px entre cada cartão */
+    padding: 20px;
+    
+    /* Configurações para não ficar apertado e permitir scroll */
+    width: 400px;         /* Largura fixa generosa para os cartões */
+    height: 1800px;
+    max-height: 100vh;    /* Ocupa no máximo a altura da tela inteira */
+    overflow-y: auto;     /* CRIA A BARRA DE ROLAGEM automática se a lista for longa */
+    
+    /* Descomente as linhas abaixo se quiser que essa lista fique grudada na direita da tela */
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-color: #2c2f33;
+}
+
+.divisor {
+    color: white;
+    font-style: italic;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.btn_close{
+    right: 30px; 
+    width: 50px; 
+    height: 50px; 
+    background-color: white; 
+    border: 1px solid #ccc; 
+    font-size: 24px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+    z-index: 10; 
+}
+
+.task-card { 
+    background-color: #ffffff;  /* Fundo do cartão branco */
+    border-radius: 8px;         /* Bordas arredondadas modernas */
+    padding: 16px;              /* Espaço interno para o texto não encostar nas bordas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombreado suave para dar profundidade */
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.task-card:hover { transform: scale(1.05); }
+
+.task-header { display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-name { 
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333
+}
+
+.task-descript {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: small;
+  color:#504f4f;
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Indicadores de Status (Bolinhas) */
+.status-indicator { width: 14px; height: 14px; border-radius: 50%; }
+.green { background-color: #17e40e; } /* Verde fluorescente do design */
+.yellow { background-color: #ffb700; } 
+.red { background-color: #ff0000; }
