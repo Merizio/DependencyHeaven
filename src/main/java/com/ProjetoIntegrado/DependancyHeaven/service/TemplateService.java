@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class TemplateService {
@@ -37,6 +38,13 @@ public class TemplateService {
         template = templateRepository.save(template);
 
         return new TemplateResponse(template.getId(), template.getNome());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TemplateResponse> listarTodos() {
+        return templateRepository.findAll().stream()
+            .map(t -> new TemplateResponse(t.getId(), t.getNome()))
+            .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
