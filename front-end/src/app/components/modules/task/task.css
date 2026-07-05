@@ -1,0 +1,95 @@
+.task-card { 
+  width: 380px; 
+  height: 420px; 
+  background-color: #f7f3ff; /* Tom levemente roxo/frio como na sua imagem */
+  border-radius: 8px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+  padding: 20px; 
+  cursor: pointer; 
+  transition: transform 0.2s; 
+}
+
+.task-card:hover { transform: scale(1.05); }
+
+.task-header { 
+    display: flex;
+    justify-content: space-between;
+    align-items:start;
+}
+.task-name { 
+    width: 60%;
+    padding: 8px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    border: 1px solid #999;
+    color: #333;
+}
+
+.btn-close{
+    background-color: #fff;
+    border: 1px solid black;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px 12px;
+    cursor: pointer;
+}
+
+.task-body{
+    display: flex;
+    flex-direction: column;
+}
+
+.task-area{
+    width: 100%;
+    min-height: 240px;
+    font-size: 1rem;
+    font-family:'Times New Roman', Times, serif;
+    resize: none;
+    margin-top: 10px;
+
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+
+.task-descript {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: medium;
+  color:#504f4f;
+  display: inline-block;
+  margin-top: 25px;
+  margin-left: 15px;
+}
+
+.task-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.left-side, .right-side {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items:end;
+    margin-top: 25px;
+}
+
+.btn-sec{
+    background-color: #fff;
+    border: 1px solid #999;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 130px;
+    text-align: center;
+}
+
+button:hover {
+    filter: brightness(0.9);
+}
+button:disabled{
+    filter: brightness(0.9);
+    cursor: not-allowed;
+}

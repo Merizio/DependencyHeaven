@@ -1,13 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Task } from '../modules/task/task';
+import { Dependencies } from "../modules/dependencies/dependencies";
 
 @Component({
   selector: 'app-canvas',
-  imports: [CommonModule],
+  imports: [CommonModule, Task, Dependencies],
   templateUrl: './canvas.html',
   styleUrl: './canvas.css',
 })
 export class Canvas implements OnInit {
+  newid = 7;
+  isTaskModalOpen = false;
+  isTelaDependencias = false;
+  tarefa_click: any = null;
   // Simulando as tarefas conectadas conforme a sua imagem
   tarefas = [
     { id: 1, titulo: 'Task 1', status: 'FINALIZADO', descricao: "para fazer, precisa disso, que apesar disso, consigo resolver aquilo", dependenciasIds: [] },
@@ -67,7 +73,83 @@ export class Canvas implements OnInit {
     }
   }
 
-  abrirModalNovaTarefa(): void {
-    console.log('Abrindo modal para criar nova tarefa...');
+  abrirModalNovaTarefa(tarefa_: any): void {
+    this.tarefa_click = tarefa_;
+    this.isTaskModalOpen = !this.isTaskModalOpen;
+    console.log('Abrindo modal para tarefa...');
+  }
+  fecharModalTarefa(): void{
+    this.isTaskModalOpen = !this.isTaskModalOpen;
+    this.tarefa_click = null;
+    console.log('Fechando modal ...');
+  }
+  receberTarefaMod(modified: any){
+    console.log("1. Pacote recebido do Modal:", modified);
+
+    const index = this.tarefas.findIndex(t=>t.id === modified.id);
+
+    console.log("2. Id da Tarefa a modifical:", modified.id);
+
+    if(index !== -1){
+      this.tarefas[index] = modified
+      console.log("4. passei por aqui");
+    }
+    else{
+      const newtask = {id: this.newid, titulo: modified.titulo, status: 'EM_ANDAMENTO', descricao: modified.descricao, dependenciasIds: [] };
+      this.newid +=1;
+      this.tarefas.push(newtask);
+    }
+
+    this.organizarPorDependencia();
+    console.log("3. tarefa depois da att:", this.tarefas[index]);
+    this.isTaskModalOpen=!this.isTaskModalOpen;
+    this.tarefa_click = null;
+  }
+
+  abrirTelaDependencias(){
+    this.isTelaDependencias=!this.isTelaDependencias;
+    console.log('aviso lista recebido ...');
+  }
+
+  fecharListaDependencias(){
+    this.isTelaDependencias = !this.isTelaDependencias;
+    //this.tarefa_click = null;
+    console.log('Fechando lista ...');
+  }
+
+  adicionarDependencia(modified: any){
+    console.log("1. Pacote recebido de add dependencias:", modified);
+
+    const index = this.tarefas.findIndex(t=>t.id === modified.id);
+
+    console.log("2. Id da Tarefa a adicionar:", modified.id);
+
+    if(index !== -1){
+      this.tarefas[index] = modified
+      console.log("4. passei por aqui");
+    }
+
+    this.organizarPorDependencia();
+    console.log("3. tarefa depois da att:", this.tarefas[index]);
+    //this.isTaskModalOpen=!this.isTaskModalOpen;
+    this.tarefa_click = {...modified};
+  }
+
+  removerDependencia(modified: any){
+    console.log("1. Pacote recebido de remove dependencias:", modified);
+
+    const index = this.tarefas.findIndex(t=>t.id === modified.id);
+
+    console.log("2. Id da Tarefa a adicionar:", modified.id);
+
+    if(index !== -1){
+      this.tarefas[index] = modified
+      console.log("4. passei por aqui");
+    }
+
+    this.organizarPorDependencia();
+    console.log("3. tarefa depois da att:", this.tarefas[index]);
+    //this.isTaskModalOpen=!this.isTaskModalOpen;
+    this.tarefa_click = {...modified};
   }
 }

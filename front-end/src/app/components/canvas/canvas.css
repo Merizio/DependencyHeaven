@@ -45,8 +45,8 @@
 
 /* O design do Cartão */
 .task-card { 
-  width: 140px; 
-  height: 150px; 
+  width: 170px; 
+  height: 180px; 
   background-color: #f7f3ff; /* Tom levemente roxo/frio como na sua imagem */
   border-radius: 8px; 
   box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
@@ -81,4 +81,42 @@
 .yellow { background-color: #ffb700; } 
 .red { background-color: #ff0000; }
 
-.fab-add { position: absolute; bottom: 30px; right: 30px; width: 50px; height: 50px; background-color: white; border: 1px solid #ccc; font-size: 24px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.15); z-index: 10; }
+.fab-add { 
+  position: absolute; 
+  bottom: 30px; 
+  right: 30px; 
+  width: 50px; 
+  height: 50px; 
+  background-color: white; 
+  border: 1px solid #ccc; 
+  font-size: 24px; 
+  border-radius: 8px; 
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+  z-index: 10; 
+}
+
+/* A película que escurece o fundo e cobre tudo */
+.overlay-fantasma {
+  position: fixed;        /* Arranca o elemento do fluxo normal */
+  top: 0;                 /* Prega no teto da tela */
+  left: 0;                /* Prega na parede esquerda */
+  width: 100vw;           /* 100% da largura da tela */
+  height: 100vh;          /* 100% da altura da tela */
+  background-color: rgba(0, 0, 0, 0.6); /* Preto com 60% de transparência */
+  z-index: 1000;          /* Joga a camada lá para frente (por cima do Canvas) */
+  
+  /* Usa Flexbox para centralizar a caixa branca perfeitamente no meio da tela */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* O visual da sua "mini tela" */
+.caixa-por-cima {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Uma sombrinha elegante */
+  text-align: center;
+}

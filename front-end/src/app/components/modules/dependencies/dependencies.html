@@ -1,0 +1,39 @@
+<div class="tasks-list">
+    <button class="btn_close" (click)="closeTask()"> x </button>
+    <p class="divisor"> ADICIONAR DEPENDÊNCIA</p>
+    
+    @for (tarefa of listaAdd(); track tarefa.id) {
+    <div class="task-card" (click)="adicionarDependencia(tarefa)">
+        <div class="task-header">
+                <span class="task-name">{{ tarefa.titulo }}</span>
+                <span class="status-indicator"
+                    [class.green]="tarefa.status === 'FINALIZADO'"
+                    [class.yellow]="tarefa.status === 'EM_ANDAMENTO'"
+                    [class.red]="tarefa.status === 'BLOQUEADO'">
+                </span>
+            </div>
+            <div class="task-body">
+            <span class="task-descript">{{ tarefa.descricao }}</span>
+            </div>
+    </div>
+    }
+
+    <p class="divisor"> REMOVER DEPENDÊNCIA</p>
+
+    @for (tarefa of listaRem(); track tarefa.id) {
+    <div class="task-card" (click)="removerDependencia(tarefa)">
+        <div class="task-header">
+                <span class="task-name">{{ tarefa.titulo }}</span>
+                <span class="status-indicator"
+                    [class.green]="tarefa.status === 'FINALIZADO'"
+                    [class.yellow]="tarefa.status === 'EM_ANDAMENTO'"
+                    [class.red]="tarefa.status === 'BLOQUEADO'">
+                </span>
+            </div>
+            <div class="task-body">
+            <span class="task-descript">{{ tarefa.descricao }}</span>
+            </div>
+    </div>
+    }
+
+</div>

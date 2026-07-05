@@ -86,7 +86,7 @@ h2 {
 }
 
 .footer-actions {
-    margin-top: 100px;
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 7px; 
