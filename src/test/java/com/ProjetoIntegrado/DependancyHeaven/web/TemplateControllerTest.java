@@ -74,4 +74,21 @@ class TemplateControllerTest {
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.erro").value("Template não encontrado com id: 999"));
     }
+
+    @Test
+    void deveListarTodosOsTemplatesERetornar200() throws Exception {
+        when(templateService.listarTodos())
+            .thenReturn(List.of(
+                new TemplateResponse(1L, "Template 1"),
+                new TemplateResponse(2L, "Template 2")
+            ));
+
+        mockMvc.perform(get("/api/templates"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[0].nome").value("Template 1"))
+            .andExpect(jsonPath("$[1].id").value(2))
+            .andExpect(jsonPath("$[1].nome").value("Template 2"));
+    }
 }
