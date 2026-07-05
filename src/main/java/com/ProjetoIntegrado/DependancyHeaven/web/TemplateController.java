@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/templates")
@@ -28,6 +29,12 @@ public class TemplateController {
     public ResponseEntity<TemplateResponse> criarTemplate(@RequestBody TemplateRequest request) {
         TemplateResponse response = templateService.criarTemplate(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TemplateResponse>> listarTemplates() {
+        List<TemplateResponse> response = templateService.listarTodos();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
