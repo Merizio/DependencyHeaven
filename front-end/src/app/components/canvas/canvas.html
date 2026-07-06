@@ -1,6 +1,6 @@
 <main class="canvas-area">
   <div class="canvas-header">
-    <span class="template-title">Template 1</span>
+    <span class="template-title">{{ templateNome }}</span>
   </div>
 
   <div class="dependency-board">
@@ -11,17 +11,35 @@
       <!-- Loop 2: Renderiza os cartões dentro dessa etapa -->
       <div *ngFor="let tarefa of coluna" class="task-card">
         <div class="task-header">
-          <span class="task-name">{{ tarefa.titulo }}</span>
+          <span class="task-name">#{{ tarefa.id }} - {{ tarefa.titulo }}</span>
           <span class="status-indicator"
                 [ngClass]="{
-                  'green': tarefa.status === 'FINALIZADO',
-                  'yellow': tarefa.status === 'EM_ANDAMENTO',
-                  'red': tarefa.status === 'BLOQUEADO'
+                  'green': tarefa.estado === 'FINALIZADO',
+                  'yellow': tarefa.estado === 'EM_ANDAMENTO',
+                  'red': tarefa.estado === 'BLOQUEADO'
                 }">
           </span>
         </div>
         <div class="task-body">
           <span class="task-descript">{{ tarefa.descricao }}</span>
+        </div>
+        
+        <div class="task-dependencies" *ngIf="tarefa.dependenciasIds && tarefa.dependenciasIds.length > 0">
+          <small>Depende de:</small>
+          <ul class="dep-list">
+            <li *ngFor="let depId of tarefa.dependenciasIds" class="dep-item">
+              {{ getNomeTarefa(depId) }}
+              <button class="btn-remove-dep" (click)="removerDependencia(tarefa, depId)" title="Remover dependência">x</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="task-actions">
+          <button *ngIf="tarefa.estado !== 'BLOQUEADO'" (click)="avancarEstado(tarefa)">
+            {{ tarefa.estado === 'PENDENTE' ? 'Iniciar' : (tarefa.estado === 'EM_ANDAMENTO' ? 'Finalizar' : 'Reabrir') }}
+          </button>
+          <span *ngIf="tarefa.estado === 'BLOQUEADO'" class="blocked-msg">Bloqueada</span>
+          <button (click)="adicionarDependencia(tarefa)">+ Dep</button>
         </div>
       </div>
       
