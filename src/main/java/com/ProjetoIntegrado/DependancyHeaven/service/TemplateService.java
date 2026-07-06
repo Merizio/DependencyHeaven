@@ -55,6 +55,7 @@ public class TemplateService {
         var tarefas = template.getTarefas().stream()
             .map(t -> new TarefaResponse(
                 t.getId(),
+                t.getIndiceLocal(),
                 t.getTitulo(),
                 t.getDescricao(),
                 t.getEstado().name(),

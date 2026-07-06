@@ -129,7 +129,7 @@ export class Canvas implements OnInit, OnChanges {
 
   getNomeTarefa(id: number): string {
     const tarefa = this.tarefas.find(t => t.id === id);
-    return tarefa ? `#${tarefa.id} - ${tarefa.titulo}` : `#${id}`;
+    return tarefa ? `#${tarefa.indiceLocal} - ${tarefa.titulo}` : `#${id}`;
   }
 
   removerDependencia(tarefa: Tarefa, dependenciaId: number) {

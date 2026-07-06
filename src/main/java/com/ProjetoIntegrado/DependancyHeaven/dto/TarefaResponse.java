@@ -5,6 +5,7 @@ import java.util.List;
 public class TarefaResponse {
 
     private Long id;
+    private Integer indiceLocal;
     private String titulo;
     private String descricao;
     private String estado;
@@ -13,9 +14,10 @@ public class TarefaResponse {
 
     public TarefaResponse() {}
 
-    public TarefaResponse(Long id, String titulo, String descricao, String estado,
+    public TarefaResponse(Long id, Integer indiceLocal, String titulo, String descricao, String estado,
                           List<MembroDto> membros, List<Long> dependenciasIds) {
         this.id = id;
+        this.indiceLocal = indiceLocal;
         this.titulo = titulo;
         this.descricao = descricao;
         this.estado = estado;
@@ -25,6 +27,8 @@ public class TarefaResponse {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    public Integer getIndiceLocal() { return indiceLocal; }
+    public void setIndiceLocal(Integer indiceLocal) { this.indiceLocal = indiceLocal; }
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public String getDescricao() { return descricao; }

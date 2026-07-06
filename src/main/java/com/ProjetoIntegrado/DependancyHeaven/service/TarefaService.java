@@ -39,6 +39,10 @@ public class TarefaService {
             .orElseThrow(() -> new EntityNotFoundException("Template não encontrado com id: " + templateId));
 
         Tarefa tarefa = new Tarefa(request.getTitulo());
+        
+        Integer maxIndice = tarefaRepository.findMaxIndiceLocalByTemplateId(templateId);
+        tarefa.setIndiceLocal(maxIndice == null ? 1 : maxIndice + 1);
+        
         tarefa.setDescricao(request.getDescricao());
         template.adicionarTarefa(tarefa);
 
@@ -128,6 +132,7 @@ public class TarefaService {
     private TarefaResponse toResponse(Tarefa tarefa) {
         return new TarefaResponse(
             tarefa.getId(),
+            tarefa.getIndiceLocal(),
             tarefa.getTitulo(),
             tarefa.getDescricao(),
             tarefa.getEstado().name(),
