@@ -92,6 +92,10 @@ public class TarefaService {
         Tarefa tarefa = buscarTarefaOuFalhar(id);
         Tarefa dependencia = buscarTarefaOuFalhar(dependenciaId);
 
+        if (!tarefa.getTemplate().getId().equals(dependencia.getTemplate().getId())) {
+            throw new IllegalArgumentException("Não é possível adicionar uma dependência de outro template.");
+        }
+
         tarefa.adicionarDependencia(dependencia);
 
         tarefa = tarefaRepository.save(tarefa);

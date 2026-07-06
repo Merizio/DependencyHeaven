@@ -118,9 +118,17 @@ export class Canvas implements OnInit, OnChanges {
   }
 
   adicionarDependencia(tarefa: Tarefa) {
-    const depId = prompt(`A tarefa "${tarefa.titulo}" dependerá de qual Tarefa ID?`);
-    if (depId && !isNaN(Number(depId))) {
-      this.tarefaService.adicionarDependencia(tarefa.id, Number(depId)).subscribe({
+    const inputId = prompt(`A tarefa "${tarefa.titulo}" dependerá de qual Tarefa (Índice)?`);
+    if (inputId && !isNaN(Number(inputId))) {
+      const indice = Number(inputId);
+      const alvo = this.tarefas.find(t => t.indiceLocal === indice);
+      
+      if (!alvo) {
+         alert(`Nenhuma tarefa com índice #${indice} encontrada neste template.`);
+         return;
+      }
+      
+      this.tarefaService.adicionarDependencia(tarefa.id, alvo.id).subscribe({
         next: () => this.carregarTarefas(),
         error: (err) => alert('Erro ao adicionar dependência: ' + (err.error?.erro || err.message))
       });
