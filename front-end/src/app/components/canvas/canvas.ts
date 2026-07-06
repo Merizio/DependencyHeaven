@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { TemplateService, Tarefa } from '../../services/template.service';
+import { TarefaService } from '../../services/tarefa.service';
 
 @Component({
   selector: 'app-canvas',
@@ -7,22 +9,36 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './canvas.html',
   styleUrl: './canvas.css',
 })
-export class Canvas implements OnInit {
-  // Simulando as tarefas conectadas conforme a sua imagem
-  tarefas = [
-    { id: 1, titulo: 'Task 1', status: 'FINALIZADO', descricao: "para fazer, precisa disso, que apesar disso, consigo resolver aquilo", dependenciasIds: [] },
-    { id: 2, titulo: 'Task 2', status: 'EM_ANDAMENTO', descricao: "para fazer, precisa disso", dependenciasIds: [1] },
-    { id: 3, titulo: 'Task 3', status: 'EM_ANDAMENTO', descricao: "para fazer, precisa disso", dependenciasIds: [1] },
-    { id: 4, titulo: 'Task 5', status: 'BLOQUEADO', descricao: "para fazer, precisa disso", dependenciasIds: [2, 3] },
-    { id: 5, titulo: 'Task 6', status: 'BLOQUEADO', descricao: "para fazer, precisa disso", dependenciasIds: [4] },
-    { id: 6, titulo: 'Task 7', status: 'EM_ANDAMENTO', descricao: "para fazer, precisa disso", dependenciasIds: [] }
-  ];
-
-  // Matriz onde cada índice é uma coluna (nível de execução)
+export class Canvas implements OnInit, OnChanges {
+  @Input() templateId!: number;
+  templateNome: string = '';
+  tarefas: Tarefa[] = [];
   colunas: any[][] = [];
 
+  private templateService = inject(TemplateService);
+  private tarefaService = inject(TarefaService);
+  private cdr = inject(ChangeDetectorRef);
+
   ngOnInit() {
-    this.organizarPorDependencia();
+    // Inicializa vazio ou carrega se templateId já existir
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['templateId'] && this.templateId) {
+      this.carregarTarefas();
+    }
+  }
+
+  carregarTarefas() {
+    this.templateService.buscarTemplate(this.templateId).subscribe({
+      next: (data) => {
+        this.templateNome = data.nome;
+        this.tarefas = data.tarefas;
+        this.organizarPorDependencia();
+        this.cdr.detectChanges(); // Força a atualização imediata da tela
+      },
+      error: (err) => console.error('Erro ao buscar tarefas do template', err)
+    });
   }
 
   organizarPorDependencia() {
@@ -58,16 +74,70 @@ export class Canvas implements OnInit {
     this.tarefas.forEach(t => calcularNivel(t));
 
     // Descobre quantas colunas teremos no total
-    const maxNivel = Math.max(...Array.from(niveis.values()));
+    let maxNivel = -1;
+    if (niveis.size > 0) {
+      maxNivel = Math.max(...Array.from(niveis.values()));
+    }
     
     // Distribui as tarefas dentro da matriz de colunas
-    this.colunas = [];
+    const novasColunas = [];
     for (let i = 0; i <= maxNivel; i++) {
-      this.colunas.push(this.tarefas.filter(t => niveis.get(t.id) === i));
+      novasColunas.push(this.tarefas.filter(t => niveis.get(t.id) === i));
     }
+    this.colunas = novasColunas;
   }
 
   abrirModalNovaTarefa(): void {
-    console.log('Abrindo modal para criar nova tarefa...');
+    const titulo = prompt('Digite o título da nova tarefa:');
+    if (titulo && titulo.trim().length > 0) {
+      const descricao = prompt('Digite a descrição (opcional):') || '';
+      // Enviamos um membro mock para garantir que a tarefa possa ir para EM_ANDAMENTO depois
+      this.tarefaService.criarTarefa(this.templateId, titulo, descricao, [{nome: 'João'}]).subscribe({
+        next: (novaTarefa) => {
+          this.tarefas = [...this.tarefas, novaTarefa];
+          this.organizarPorDependencia();
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Erro ao criar tarefa', err)
+      });
+    }
+  }
+
+  avancarEstado(tarefa: Tarefa) {
+    let novoEstado = '';
+    if (tarefa.estado === 'PENDENTE') novoEstado = 'EM_ANDAMENTO';
+    else if (tarefa.estado === 'EM_ANDAMENTO') novoEstado = 'FINALIZADO';
+    else if (tarefa.estado === 'FINALIZADO') novoEstado = 'PENDENTE';
+    
+    if (novoEstado) {
+      this.tarefaService.alterarEstado(tarefa.id, novoEstado).subscribe({
+        next: () => this.carregarTarefas(),
+        error: (err) => alert('Erro ao alterar estado: ' + (err.error?.erro || err.message))
+      });
+    }
+  }
+
+  adicionarDependencia(tarefa: Tarefa) {
+    const depId = prompt(`A tarefa "${tarefa.titulo}" dependerá de qual Tarefa ID?`);
+    if (depId && !isNaN(Number(depId))) {
+      this.tarefaService.adicionarDependencia(tarefa.id, Number(depId)).subscribe({
+        next: () => this.carregarTarefas(),
+        error: (err) => alert('Erro ao adicionar dependência: ' + (err.error?.erro || err.message))
+      });
+    }
+  }
+
+  getNomeTarefa(id: number): string {
+    const tarefa = this.tarefas.find(t => t.id === id);
+    return tarefa ? `#${tarefa.id} - ${tarefa.titulo}` : `#${id}`;
+  }
+
+  removerDependencia(tarefa: Tarefa, dependenciaId: number) {
+    if (confirm('Tem certeza que deseja remover esta dependência?')) {
+      this.tarefaService.removerDependencia(tarefa.id, dependenciaId).subscribe({
+        next: () => this.carregarTarefas(),
+        error: (err) => alert('Erro ao remover dependência: ' + (err.error?.erro || err.message))
+      });
+    }
   }
 }
