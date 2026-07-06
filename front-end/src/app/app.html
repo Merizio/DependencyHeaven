@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 
 <div class="layout-container">
-  <app-sidebar></app-sidebar>
+  <app-sidebar (templateSelecionado)="onTemplateSelecionado($event)"></app-sidebar>
 
-  <app-canvas></app-canvas>
+  <app-canvas *ngIf="selectedTemplateId" [templateId]="selectedTemplateId"></app-canvas>
+  <div *ngIf="!selectedTemplateId" class="no-template-selected">
+    <p>Selecione ou crie um template na barra lateral para começar.</p>
+  </div>
 </div>
 
 <router-outlet />

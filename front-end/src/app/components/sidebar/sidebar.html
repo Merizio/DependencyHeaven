@@ -10,11 +10,11 @@
   <div class="menu-section">
     <h3>Meus Templates</h3>
     <ul class="template-list">
-      <li *ngFor="let t of templates" [class.active]="t.ativo">
+      <li *ngFor="let t of templates" [class.active]="t.ativo" (click)="selecionarTemplate(t)">
         {{ t.id }} - {{ t.nome }}
       </li>
     </ul>
-    <button class="btn-create">Criar Novo +</button>
+    <button class="btn-create" (click)="criarTemplate()">Criar Novo +</button>
   </div>
 
   <div class="footer-actions">

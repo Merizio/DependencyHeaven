@@ -11,7 +11,7 @@
       <!-- Loop 2: Renderiza os cartões dentro dessa etapa -->
       <div *ngFor="let tarefa of coluna" class="task-card">
         <div class="task-header">
-          <span class="task-name">#{{ tarefa.id }} - {{ tarefa.titulo }}</span>
+          <span class="task-name">#{{ tarefa.indiceLocal }} - {{ tarefa.titulo }}</span>
           <span class="status-indicator"
                 [ngClass]="{
                   'green': tarefa.estado === 'FINALIZADO',

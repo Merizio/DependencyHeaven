@@ -32,7 +32,7 @@ class TarefaControllerTest {
     private TarefaService tarefaService;
 
     private TarefaResponse tarefaResponsePadrao() {
-        return new TarefaResponse(1L, "Configurar Banco", "Instalar PostgreSQL", "PENDENTE",
+        return new TarefaResponse(1L, 1, "Configurar Banco", "Instalar PostgreSQL", "PENDENTE",
             List.of(new MembroDto("Davi")), List.of());
     }
 
@@ -61,8 +61,8 @@ class TarefaControllerTest {
 
     @Test
     void deveAtualizarTarefaERetornar200() throws Exception {
-        var response = new TarefaResponse(1L, "BD Atualizado", "PostgreSQL 15", "PENDENTE",
-            List.of(new MembroDto("Davi"), new MembroDto("Paula")), List.of());
+        TarefaResponse response = new TarefaResponse(1L, 1, "Tarefa Atualizada", "Nova Desc", "PENDENTE",
+            List.of(new MembroDto("João"), new MembroDto("Paula")), List.of());
 
         when(tarefaService.atualizarTarefa(eq(1L), any())).thenReturn(response);
 
@@ -78,13 +78,13 @@ class TarefaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.titulo").value("BD Atualizado"))
+            .andExpect(jsonPath("$.titulo").value("Tarefa Atualizada"))
             .andExpect(jsonPath("$.membros.length()").value(2));
     }
 
     @Test
     void deveAlterarEstadoERetornar200() throws Exception {
-        var response = new TarefaResponse(1L, "Configurar Banco", null, "EM_ANDAMENTO",
+        TarefaResponse response = new TarefaResponse(1L, 1, "Nova Tarefa", "Descricao", "EM_ANDAMENTO",
             List.of(new MembroDto("Davi")), List.of());
 
         when(tarefaService.alterarEstado(eq(1L), eq(Estado.EM_ANDAMENTO))).thenReturn(response);
@@ -118,7 +118,7 @@ class TarefaControllerTest {
 
     @Test
     void deveAdicionarDependenciaERetornar200() throws Exception {
-        var response = new TarefaResponse(1L, "Deploy", null, "BLOQUEADO",
+        TarefaResponse response = new TarefaResponse(1L, 1, "Tarefa com dep", null, "BLOQUEADO",
             List.of(), List.of(2L));
 
         when(tarefaService.adicionarDependencia(eq(1L), eq(2L))).thenReturn(response);

@@ -83,6 +83,7 @@ class EntidadeJpaTest {
         entityManager.persistAndFlush(template);
 
         Tarefa tarefa = new Tarefa("Configurar Banco");
+        tarefa.setIndiceLocal(1);
         tarefa.setDescricao("Instalar e configurar o PostgreSQL");
         tarefa.setTemplate(template);
         entityManager.persistAndFlush(tarefa);
@@ -111,6 +112,7 @@ class EntidadeJpaTest {
         entityManager.persistAndFlush(membro2);
 
         Tarefa tarefa = new Tarefa("Fazer Deploy");
+        tarefa.setIndiceLocal(1);
         tarefa.setTemplate(template);
         tarefa.getMembros().add(membro1);
         tarefa.getMembros().add(membro2);
@@ -134,16 +136,19 @@ class EntidadeJpaTest {
         entityManager.persistAndFlush(template);
 
         Tarefa tarefaA = new Tarefa("Configurar Docker");
+        tarefaA.setIndiceLocal(1);
         tarefaA.setTemplate(template);
         tarefaA.setEstado(Estado.FINALIZADO);
         entityManager.persistAndFlush(tarefaA);
 
         Tarefa tarefaB = new Tarefa("Configurar CI");
+        tarefaB.setIndiceLocal(2);
         tarefaB.setTemplate(template);
         tarefaB.setEstado(Estado.PENDENTE);
         entityManager.persistAndFlush(tarefaB);
 
         Tarefa tarefaC = new Tarefa("Fazer Deploy");
+        tarefaC.setIndiceLocal(3);
         tarefaC.setTemplate(template);
         tarefaC.getDependencias().add(tarefaA);
         tarefaC.getDependencias().add(tarefaB);

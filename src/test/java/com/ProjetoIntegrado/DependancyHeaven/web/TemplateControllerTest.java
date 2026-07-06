@@ -50,7 +50,7 @@ class TemplateControllerTest {
     @Test
     void deveBuscarTemplateComTarefasERetornar200() throws Exception {
         var tarefas = List.of(
-            new TarefaResponse(10L, "Configurar Banco", null, "PENDENTE",
+            new TarefaResponse(10L, 1, "Configurar Banco", null, "PENDENTE",
                 List.of(), List.of())
         );
         when(templateService.buscarPorId(1L))
