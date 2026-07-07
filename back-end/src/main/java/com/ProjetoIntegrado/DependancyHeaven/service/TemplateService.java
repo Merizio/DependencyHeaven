@@ -55,6 +55,7 @@ public class TemplateService {
         var tarefas = template.getTarefas().stream()
             .map(t -> new TarefaResponse(
                 t.getId(),
+                t.getIndiceLocal(),
                 t.getTitulo(),
                 t.getDescricao(),
                 t.getEstado().name(),
@@ -68,5 +69,12 @@ public class TemplateService {
             .collect(Collectors.toList());
 
         return new TemplateDetalhadoResponse(template.getId(), template.getNome(), tarefas);
+    }
+
+    @Transactional
+    public void excluirTemplate(Long id) {
+        Template template = templateRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Template não encontrado com id: " + id));
+        templateRepository.delete(template);
     }
 }

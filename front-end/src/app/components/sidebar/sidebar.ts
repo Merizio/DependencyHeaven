@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, Output, EventEmitter } from '@angular/core';
+import { TemplateService, Template } from '../../services/template.service';
+
+export interface TemplateItem extends Template {
+  ativo?: boolean;
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -7,14 +12,57 @@ import { Component } from '@angular/core';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar {
-  // Variáveis que o HTML vai ler
+export class Sidebar implements OnInit {
   nomeUsuario: string = 'Usuário';
+  templates: TemplateItem[] = [];
+  @Output() templateSelecionado = new EventEmitter<number>();
   
-  // No futuro, isso virá do banco de dados (Spring Boot)
-  templates = [
-    { id: 1, nome: 'Template 1', ativo: true },
-    { id: 2, nome: 'Template 2', ativo: false },
-    { id: 3, nome: 'Exemplo', ativo: false }
-  ];
+  private templateService = inject(TemplateService);
+
+  ngOnInit() {
+    this.carregarTemplates();
+  }
+
+  carregarTemplates() {
+    this.templateService.listarTemplates().subscribe({
+      next: (data) => {
+        this.templates = data.map(t => ({ ...t, ativo: false }));
+        if (this.templates.length > 0) {
+          this.selecionarTemplate(this.templates[0]);
+        }
+      },
+      error: (err) => console.error('Erro ao buscar templates', err)
+    });
+  }
+
+  selecionarTemplate(template: TemplateItem) {
+    this.templates.forEach(t => t.ativo = false);
+    template.ativo = true;
+    this.templateSelecionado.emit(template.id);
+  }
+
+  criarTemplate() {
+    const nome = prompt('Digite o nome do novo template:');
+    if (nome && nome.trim().length > 0) {
+      // Usamos usuarioId = 1 para simular o usuário logado
+      this.templateService.criarTemplate(nome, 1).subscribe({
+        next: (novoTemplate) => {
+          const t: TemplateItem = { ...novoTemplate, ativo: false };
+          this.templates.push(t);
+          this.selecionarTemplate(t);
+        },
+        error: (err) => console.error('Erro ao criar template', err)
+      });
+    }
+  }
+
+  deleteTemplate(template: TemplateItem, event: Event) {
+    event.stopPropagation(); // Evita que o template seja selecionado ao clicar na lixeira
+    if (confirm(`Deseja realmente excluir o projeto "${template.nome}"? Todas as tarefas serão perdidas permanentemente.`)) {
+      this.templateService.deleteTemplate(template.id).subscribe({
+        next: () => this.carregarTemplates(),
+        error: (err) => alert('Erro ao excluir template: ' + (err.error?.erro || err.message))
+      });
+    }
+  }
 }

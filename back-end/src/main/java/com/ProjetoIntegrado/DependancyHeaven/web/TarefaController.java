@@ -67,4 +67,10 @@ public class TarefaController {
         tarefaService.removerDependencia(id, dependenciaId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/tarefas/{id}")
+    public ResponseEntity<Void> excluirTarefa(@PathVariable Long id) {
+        tarefaService.excluirTarefa(id);
+        return ResponseEntity.noContent().build();
+    }
 }

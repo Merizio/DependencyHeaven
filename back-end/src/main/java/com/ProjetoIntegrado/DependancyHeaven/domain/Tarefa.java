@@ -27,6 +27,9 @@ public class Tarefa {
     private Long id;
 
     @Column(nullable = false)
+    private Integer indiceLocal;
+
+    @Column(nullable = false)
     private String titulo;
 
     private String descricao;
@@ -198,6 +201,14 @@ public class Tarefa {
 
     public Long getId() {
         return id;
+    }
+
+    public Integer getIndiceLocal() {
+        return indiceLocal;
+    }
+
+    public void setIndiceLocal(Integer indiceLocal) {
+        this.indiceLocal = indiceLocal;
     }
 
     public String getTitulo() {

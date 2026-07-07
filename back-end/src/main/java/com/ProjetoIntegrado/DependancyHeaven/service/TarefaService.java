@@ -39,6 +39,10 @@ public class TarefaService {
             .orElseThrow(() -> new EntityNotFoundException("Template não encontrado com id: " + templateId));
 
         Tarefa tarefa = new Tarefa(request.getTitulo());
+        
+        Integer maxIndice = tarefaRepository.findMaxIndiceLocalByTemplateId(templateId);
+        tarefa.setIndiceLocal(maxIndice == null ? 1 : maxIndice + 1);
+        
         tarefa.setDescricao(request.getDescricao());
         template.adicionarTarefa(tarefa);
 
@@ -88,6 +92,10 @@ public class TarefaService {
         Tarefa tarefa = buscarTarefaOuFalhar(id);
         Tarefa dependencia = buscarTarefaOuFalhar(dependenciaId);
 
+        if (!tarefa.getTemplate().getId().equals(dependencia.getTemplate().getId())) {
+            throw new IllegalArgumentException("Não é possível adicionar uma dependência de outro template.");
+        }
+
         tarefa.adicionarDependencia(dependencia);
 
         tarefa = tarefaRepository.save(tarefa);
@@ -101,6 +109,37 @@ public class TarefaService {
 
         tarefa.removerDependencia(dependencia);
         tarefaRepository.save(tarefa);
+    }
+
+    @Transactional
+    public void excluirTarefa(Long id) {
+        Tarefa tarefa = buscarTarefaOuFalhar(id);
+        Template template = tarefa.getTemplate();
+        Integer indiceRemovido = tarefa.getIndiceLocal();
+
+        // Remove a tarefa das listas de quem depende dela
+        List<Tarefa> dependentes = new ArrayList<>(tarefa.getDependentes());
+        for (Tarefa dependente : dependentes) {
+            dependente.removerDependencia(tarefa);
+            tarefaRepository.save(dependente);
+        }
+
+        // Limpa as próprias relações
+        tarefa.getDependencias().clear();
+        tarefa.getDependentes().clear();
+
+        // Reajusta os índices do template
+        List<Tarefa> tarefasDoTemplate = template.getTarefas();
+        for (Tarefa t : tarefasDoTemplate) {
+            if (t.getIndiceLocal() > indiceRemovido) {
+                t.setIndiceLocal(t.getIndiceLocal() - 1);
+                tarefaRepository.save(t);
+            }
+        }
+
+        // Desassocia do template e apaga
+        template.getTarefas().remove(tarefa);
+        tarefaRepository.delete(tarefa);
     }
 
     // =========================================================================
@@ -128,6 +167,7 @@ public class TarefaService {
     private TarefaResponse toResponse(Tarefa tarefa) {
         return new TarefaResponse(
             tarefa.getId(),
+            tarefa.getIndiceLocal(),
             tarefa.getTitulo(),
             tarefa.getDescricao(),
             tarefa.getEstado().name(),

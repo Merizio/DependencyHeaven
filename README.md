@@ -20,41 +20,50 @@ Sistema de gerenciamento de tarefas com designação de dependências.
 
 ## Como Gerar a Documentação do Código
 
-A documentação do código (JavaDoc) pode ser gerada usando o plugin do Maven. Para isso, execute o seguinte comando no terminal (na raiz do projeto):
+A documentação do código (JavaDoc) pode ser gerada usando o plugin do Maven. Para isso, execute o seguinte comando no terminal (na pasta do back-end):
 
 ```bash
+cd back-end
 ./mvnw javadoc:javadoc
 ```
 *(No Windows, você pode usar `mvnw.cmd javadoc:javadoc`)*
 
 ## Como Executar o Sistema
 
-### Opção 1: Execução Nativa (Requer Java 21)
+### Opção 1: Execução Nativa
 
 Para executar a aplicação diretamente na sua máquina, siga estes passos:
 
-1. Abra o terminal na pasta raiz do repositório (onde está o arquivo `pom.xml`).
-2. Execute o comando do Maven Wrapper para baixar as dependências e iniciar o Spring Boot:
+#### Back-End (Requer Java 21)
+1. Abra o terminal na pasta `back-end`.
+2. Execute o comando para baixar as dependências e iniciar o Spring Boot:
    ```bash
    ./mvnw spring-boot:run
    ```
    *(Se estiver no Windows, use `mvnw.cmd spring-boot:run`)*
-3. Assim que o terminal indicar que a aplicação iniciou, acesse pelo seu navegador o endereço:
-   [http://localhost:8080](http://localhost:8080)
+3. O servidor backend iniciará em [http://localhost:8080](http://localhost:8080).
+
+#### Front-End (Requer Node.js)
+1. Abra o terminal na pasta `front-end`.
+2. Instale as dependências e inicie o servidor de desenvolvimento do Angular:
+   ```bash
+   npm install
+   npm start
+   ```
+3. O frontend estará disponível em [http://localhost:4200](http://localhost:4200).
 
 ### Opção 2: Execução via Docker (Requer Docker e Docker Compose)
 
-Para executar a aplicação utilizando containers (sem necessidade de ter o Java instalado na máquina local):
+Para executar a aplicação completa utilizando containers (sem necessidade de ter o Java ou Node.js instalados na máquina local):
 
 1. Abra o terminal na pasta raiz do repositório.
-2. Execute o comando do Docker Compose para construir a imagem e iniciar o container:
+2. Execute o comando do Docker Compose para construir as imagens e iniciar os containers do back-end e front-end:
    ```bash
    docker compose up --build
    ```
-3. Acesse pelo seu navegador o endereço:
-   [http://localhost:8080](http://localhost:8080)
-
-Você verá uma tela básica confirmando que o sistema está no ar! Posteriormente essa tela será substituída pela nossa interface em Angular.
+3. Acesse a aplicação pelos seguintes endereços:
+   - **Front-End (Angular)**: [http://localhost:4200](http://localhost:4200)
+   - **Back-End (Spring Boot)**: [http://localhost:8080](http://localhost:8080)
 
 ## Membros
 - Davi Altafim
