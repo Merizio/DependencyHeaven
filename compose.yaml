@@ -1,7 +1,7 @@
 services:
   backend:
     build:
-      context: .
+      context: ./back-end
       dockerfile: Dockerfile
     container_name: dependency-heaven-backend
     ports:
@@ -10,6 +10,16 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: dependency-heaven-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
 # Futuramente, se migrarmos do H2 (em memória) para o PostgreSQL, 
 # podemos adicionar o serviço do banco de dados aqui.
-# E também o serviço do Front-end (Angular) em outra porta (ex: 4200).

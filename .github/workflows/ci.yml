@@ -9,6 +9,9 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./back-end
 
     steps:
     - name: Checkout do Repositório
@@ -34,4 +37,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: dependancy-heaven-backend
-        path: target/*.jar
+        path: back-end/target/*.jar
