@@ -70,4 +70,11 @@ public class TemplateService {
 
         return new TemplateDetalhadoResponse(template.getId(), template.getNome(), tarefas);
     }
+
+    @Transactional
+    public void excluirTemplate(Long id) {
+        Template template = templateRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Template não encontrado com id: " + id));
+        templateRepository.delete(template);
+    }
 }

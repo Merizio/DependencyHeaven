@@ -141,10 +141,19 @@ export class Canvas implements OnInit, OnChanges {
   }
 
   removerDependencia(tarefa: Tarefa, dependenciaId: number) {
-    if (confirm('Tem certeza que deseja remover esta dependência?')) {
+    if (confirm('Deseja realmente remover esta dependência?')) {
       this.tarefaService.removerDependencia(tarefa.id, dependenciaId).subscribe({
         next: () => this.carregarTarefas(),
         error: (err) => alert('Erro ao remover dependência: ' + (err.error?.erro || err.message))
+      });
+    }
+  }
+
+  deleteTarefa(tarefa: Tarefa) {
+    if (confirm(`Deseja realmente excluir a tarefa "${tarefa.titulo}" e todas as suas ligações? Essa ação não pode ser desfeita.`)) {
+      this.tarefaService.deleteTarefa(tarefa.id).subscribe({
+        next: () => this.carregarTarefas(),
+        error: (err) => alert('Erro ao excluir tarefa: ' + (err.error?.erro || err.message))
       });
     }
   }

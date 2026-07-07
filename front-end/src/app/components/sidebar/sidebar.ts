@@ -55,4 +55,14 @@ export class Sidebar implements OnInit {
       });
     }
   }
+
+  deleteTemplate(template: TemplateItem, event: Event) {
+    event.stopPropagation(); // Evita que o template seja selecionado ao clicar na lixeira
+    if (confirm(`Deseja realmente excluir o projeto "${template.nome}"? Todas as tarefas serão perdidas permanentemente.`)) {
+      this.templateService.deleteTemplate(template.id).subscribe({
+        next: () => this.carregarTemplates(),
+        error: (err) => alert('Erro ao excluir template: ' + (err.error?.erro || err.message))
+      });
+    }
+  }
 }

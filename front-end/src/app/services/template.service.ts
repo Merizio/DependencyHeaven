@@ -41,4 +41,8 @@ export class TemplateService {
   buscarTemplate(id: number): Observable<TemplateDetalhado> {
     return this.http.get<TemplateDetalhado>(`${this.apiUrl}/${id}`);
   }
+
+  deleteTemplate(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

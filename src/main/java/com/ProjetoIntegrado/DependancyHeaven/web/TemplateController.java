@@ -42,4 +42,10 @@ public class TemplateController {
         TemplateDetalhadoResponse response = templateService.buscarPorId(id);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirTemplate(@PathVariable Long id) {
+        templateService.excluirTemplate(id);
+        return ResponseEntity.noContent().build();
+    }
 }
