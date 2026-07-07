@@ -26,7 +26,11 @@ export class TarefaService {
     return this.http.post<Tarefa>(`${this.apiUrl}/tarefas/${id}/dependencias`, { dependenciaId });
   }
 
-  removerDependencia(id: number, dependenciaId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/tarefas/${id}/dependencias/${dependenciaId}`);
+  removerDependencia(tarefaId: number, dependenciaId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/tarefas/${tarefaId}/dependencias/${dependenciaId}`);
+  }
+
+  deleteTarefa(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/tarefas/${id}`);
   }
 }

@@ -111,6 +111,37 @@ public class TarefaService {
         tarefaRepository.save(tarefa);
     }
 
+    @Transactional
+    public void excluirTarefa(Long id) {
+        Tarefa tarefa = buscarTarefaOuFalhar(id);
+        Template template = tarefa.getTemplate();
+        Integer indiceRemovido = tarefa.getIndiceLocal();
+
+        // Remove a tarefa das listas de quem depende dela
+        List<Tarefa> dependentes = new ArrayList<>(tarefa.getDependentes());
+        for (Tarefa dependente : dependentes) {
+            dependente.removerDependencia(tarefa);
+            tarefaRepository.save(dependente);
+        }
+
+        // Limpa as próprias relações
+        tarefa.getDependencias().clear();
+        tarefa.getDependentes().clear();
+
+        // Reajusta os índices do template
+        List<Tarefa> tarefasDoTemplate = template.getTarefas();
+        for (Tarefa t : tarefasDoTemplate) {
+            if (t.getIndiceLocal() > indiceRemovido) {
+                t.setIndiceLocal(t.getIndiceLocal() - 1);
+                tarefaRepository.save(t);
+            }
+        }
+
+        // Desassocia do template e apaga
+        template.getTarefas().remove(tarefa);
+        tarefaRepository.delete(tarefa);
+    }
+
     // =========================================================================
     // Métodos Privados
     // =========================================================================

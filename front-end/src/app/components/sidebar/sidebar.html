@@ -10,8 +10,9 @@
   <div class="menu-section">
     <h3>Meus Templates</h3>
     <ul class="template-list">
-      <li *ngFor="let t of templates" [class.active]="t.ativo" (click)="selecionarTemplate(t)">
-        {{ t.id }} - {{ t.nome }}
+      <li *ngFor="let t of templates" [class.active]="t.ativo" (click)="selecionarTemplate(t)" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>{{ t.id }} - {{ t.nome }}</span>
+        <button (click)="deleteTemplate(t, $event)" title="Excluir Template" style="background: none; border: none; cursor: pointer; padding: 0;">🗑️</button>
       </li>
     </ul>
     <button class="btn-create" (click)="criarTemplate()">Criar Novo +</button>
