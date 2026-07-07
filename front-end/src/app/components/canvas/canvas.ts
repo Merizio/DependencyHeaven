@@ -1,34 +1,58 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, inject, signal } from '@angular/core';
 import { Task } from '../modules/task/task';
 import { Dependencies } from "../modules/dependencies/dependencies";
+import { TemplateService } from '../../template';
 
 @Component({
   selector: 'app-canvas',
-  imports: [CommonModule, Task, Dependencies],
+  imports: [CommonModule, Task, Dependencies  ],
   templateUrl: './canvas.html',
   styleUrl: './canvas.css',
 })
-export class Canvas implements OnInit {
+export class Canvas{
   newid = 7;
   isTaskModalOpen = false;
   isTelaDependencias = false;
   tarefa_click: any = null;
+  mensagemErroLoop= signal<string | null>(null);
+
+
   // Simulando as tarefas conectadas conforme a sua imagem
-  tarefas = [
-    { id: 1, titulo: 'Task 1', status: 'FINALIZADO', descricao: "para fazer, precisa disso, que apesar disso, consigo resolver aquilo", dependenciasIds: [] },
-    { id: 2, titulo: 'Task 2', status: 'EM_ANDAMENTO', descricao: "para fazer, precisa disso", dependenciasIds: [1] },
-    { id: 3, titulo: 'Task 3', status: 'EM_ANDAMENTO', descricao: "para fazer, precisa disso", dependenciasIds: [1] },
-    { id: 4, titulo: 'Task 5', status: 'BLOQUEADO', descricao: "para fazer, precisa disso", dependenciasIds: [2, 3] },
-    { id: 5, titulo: 'Task 6', status: 'BLOQUEADO', descricao: "para fazer, precisa disso", dependenciasIds: [4] },
-    { id: 6, titulo: 'Task 7', status: 'EM_ANDAMENTO', descricao: "para fazer, precisa disso", dependenciasIds: [] }
-  ];
+  tarefas:any[] = [];
+  nomeTemplate: string = '';
 
   // Matriz onde cada índice é uma coluna (nível de execução)
   colunas: any[][] = [];
+  templateService = inject(TemplateService);
+  private cdr = inject(ChangeDetectorRef);  
 
-  ngOnInit() {
-    this.organizarPorDependencia();
+  constructor() {
+    effect(() => {
+      const templateSelecionado = this.templateService.templateAtivo();
+
+      if (templateSelecionado) {
+        console.log("1. Canvas recebeu o template:", templateSelecionado.nome);
+        this.nomeTemplate = templateSelecionado.nome;
+        
+        // 2. CLONE PROFUNDO: Corta a ligação com a Sidebar para você poder 
+        // mexer nas dependências no Canvas sem quebrar os dados originais.
+        this.tarefas = JSON.parse(JSON.stringify(templateSelecionado.tarefas || []));
+        
+        // 3. Roda o algoritmo dos grafos
+        this.organizarPorDependencia();
+
+        console.log("2. Matriz gerada para a tela:", this.colunas);
+
+        // 4. O TIRO DE MISERICÓRDIA: Grita para o HTML se atualizar!
+        this.cdr.detectChanges();
+
+      } else {
+        this.tarefas = [];
+        this.colunas = [];
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   organizarPorDependencia() {
@@ -118,21 +142,28 @@ export class Canvas implements OnInit {
   }
 
   adicionarDependencia(modified: any){
-    console.log("1. Pacote recebido de add dependencias:", modified);
+    try{
+      console.log("1. Pacote recebido de add dependencias:", modified);
 
-    const index = this.tarefas.findIndex(t=>t.id === modified.id);
+      const index = this.tarefas.findIndex(t=>t.id === modified.id);
 
-    console.log("2. Id da Tarefa a adicionar:", modified.id);
+      console.log("2. Id da Tarefa a adicionar:", modified.id);
 
-    if(index !== -1){
-      this.tarefas[index] = modified
-      console.log("4. passei por aqui");
+      if(index !== -1){
+        this.tarefas[index] = modified
+        console.log("4. passei por aqui");
+      }
+
+      this.organizarPorDependencia();
+      console.log("3. tarefa depois da att:", this.tarefas[index]);
+      //this.isTaskModalOpen=!this.isTaskModalOpen;
+      this.tarefa_click = {...modified};
     }
+    catch{
+      console.log("Loop de dependências ...");
+      this.mostrarAviso("Essa tarefa depende da Atual!");
 
-    this.organizarPorDependencia();
-    console.log("3. tarefa depois da att:", this.tarefas[index]);
-    //this.isTaskModalOpen=!this.isTaskModalOpen;
-    this.tarefa_click = {...modified};
+    }
   }
 
   removerDependencia(modified: any){
@@ -151,5 +182,13 @@ export class Canvas implements OnInit {
     console.log("3. tarefa depois da att:", this.tarefas[index]);
     //this.isTaskModalOpen=!this.isTaskModalOpen;
     this.tarefa_click = {...modified};
+  }
+
+  mostrarAviso(mensagem: string){
+    this.mensagemErroLoop.set(mensagem);
+
+    setTimeout(() => {
+      this.mensagemErroLoop.set(null);
+    }, 2000);
   }
 }

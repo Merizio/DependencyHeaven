@@ -120,3 +120,39 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Uma sombrinha elegante */
   text-align: center;
 }
+
+.toast-erro-loop {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%); /* Centraliza perfeitamente no meio da tela */
+  background-color: #ef4444; /* Vermelho suave de erro */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 9999; /* Garante que fique por cima de modais e painéis */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  /* Chama a animação de entrada */
+  animation: deslizarParaCima 0.3s ease-out forwards;
+}
+
+.toast-erro-loop .icone {
+  font-size: 1.2rem;
+}
+
+/* Animação que faz o aviso vir de baixo */
+@keyframes deslizarParaCima {
+  from {
+    opacity: 0;
+    bottom: -20px;
+  }
+  to {
+    opacity: 1;
+    bottom: 30px;
+  }
+}

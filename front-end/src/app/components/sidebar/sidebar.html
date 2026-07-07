@@ -1,6 +1,6 @@
 <aside class="sidebar">
   <div class="header">
-    <h2>Paraiso das Dependencias</h2>
+    <h2>Paraíso das Dependências</h2>
     <div class="user-profile">
       <div class="avatar"></div>
       <span>{{ nomeUsuario }}</span> 
@@ -10,9 +10,15 @@
   <div class="menu-section">
     <h3>Meus Templates</h3>
     <ul class="template-list">
-      <li *ngFor="let t of templates" [class.active]="t.ativo">
-        {{ t.id }} - {{ t.nome }}
-      </li>
+      
+      @for (t of templates; track t.id) {
+        <li 
+          (click)="aoClicarTemplate(t)" 
+          [class.active]="templateService.templateAtivo()?.id === t.id">
+          {{ t.id }} - {{ t.nome }}
+        </li>
+      }
+
     </ul>
     <button class="btn-create">Criar Novo +</button>
   </div>

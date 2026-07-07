@@ -1,6 +1,6 @@
 <main class="canvas-area">
   <div class="canvas-header">
-    <span class="template-title">Template 1</span>
+    <span class="template-title">{{nomeTemplate}}</span>
   </div>
 
   <div class="dependency-board">
@@ -31,7 +31,7 @@
 
   <button class="fab-add" (click)="abrirModalNovaTarefa(tarefa_click)">+</button>
   @if (isTaskModalOpen) {
-    <div class="overlay-fantasma" (click)="fecharModalTarefa()">
+    <div class="overlay-fantasma">
         <app-task 
         [tarefa]="tarefa_click"
         (avisoFechar)="fecharModalTarefa()"
@@ -52,6 +52,13 @@
       (taskRem)="removerDependencia($event)"
       (click)="$event.stopPropagation()">
       </app-dependencies>
+    </div>
+  }
+
+  @if(mensagemErroLoop()){
+    <div class="toast-erro-loop">
+      <span class="icone">⚠️</span>
+      {{ mensagemErroLoop() }}
     </div>
   }
 
