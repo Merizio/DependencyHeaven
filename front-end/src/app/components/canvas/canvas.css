@@ -1,122 +1,224 @@
-.canvas-area { 
-  flex: 1; 
-  position: relative; 
-  overflow: auto; 
-  background-color: #fcfcfc; /* Fundo levemente mais claro para destacar as linhas */
-  height: 100%; 
+.canvas-area {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  height: 100%;
+  background:
+    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    #f8fafc;
+  background-size: 32px 32px;
 }
 
-.canvas-header { 
-  position: absolute; 
-  top: 20px; 
-  left: 20px; 
-  background-color: #e0e0e0; 
-  padding: 10px 20px; 
-  border-radius: 4px; 
-  font-weight: bold; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.canvas-header {
+  position: sticky;
+  top: 0;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(10px);
 }
 
-/* O container do grafo */
+.canvas-header small {
+  display: block;
+  color: #6b7280;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+}
+
+.template-title {
+  display: block;
+  margin-top: 4px;
+  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.header-action,
+.fab-add,
+.task-actions button {
+  border: 0;
+  color: white;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .dependency-board {
   display: flex;
   flex-direction: row;
-  padding: 100px 0;
-  height: 100%;
-  align-items: stretch; /* Estica as colunas até o final da tela */
+  gap: 18px;
+  padding: 12px 28px 110px;
+  min-height: calc(100% - 100px);
+  align-items: flex-start;
 }
 
-/* Cada etapa/nível de execução */
 .dependency-column {
+  min-width: 250px;
   display: flex;
   flex-direction: column;
-  gap: 30px; /* Distância vertical entre blocos da mesma etapa */
-  padding: 0 50px; /* Distância horizontal entre etapas */
-  border-right: 2px solid #e0e0e0; /* As linhas verticais do Figma */
-  align-items: center; /* Centraliza os cartões na coluna */
-  min-width: 200px;
+  gap: 18px;
+  padding: 16px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
-/* Remove a linha da última coluna para ficar elegante */
-.dependency-column:last-child {
-  border-right: none;
+.column-title {
+  color: #6b7280;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-/* O design do Cartão */
-.task-card { 
-  width: 170px; 
-  height: 180px; 
-  background-color: #f7f3ff; /* Tom levemente roxo/frio como na sua imagem */
-  border-radius: 8px; 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-  padding: 15px; 
-  cursor: pointer; 
-  transition: transform 0.2s; 
+.task-card {
+  width: 100%;
+  min-height: 190px;
+  background: white;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 20px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.task-card:hover { transform: scale(1.05); }
+.task-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+}
 
-.task-header { display: flex;
+.task-header,
+.task-icons {
+  display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
-.task-name { 
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #333
+
+.task-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #111827;
 }
 
 .task-descript {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: small;
-  color:#504f4f;
+  color: #6b7280;
   display: inline-block;
   margin-top: 10px;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
-/* Indicadores de Status (Bolinhas) */
-.status-indicator { width: 14px; height: 14px; border-radius: 50%; }
-.green { background-color: #17e40e; } /* Verde fluorescente do design */
-.yellow { background-color: #ffb700; } 
-.red { background-color: #ff0000; }
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
 
-.fab-add { 
-  position: absolute; 
-  bottom: 30px; 
-  right: 30px; 
-  width: 50px; 
-  height: 50px; 
-  background-color: white; 
-  border: 1px solid #ccc; 
-  font-size: 24px; 
-  border-radius: 8px; 
+.green { background-color: #22c55e; }
+.yellow { background-color: #f59e0b; }
+.red { background-color: #ef4444; }
+
+.icon-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 8px;
+  background: #f3f4f6;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
-  z-index: 10; 
 }
 
-/* A película que escurece o fundo e cobre tudo */
+.task-dependencies {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.task-dependencies small {
+  color: #6b7280;
+  font-weight: 800;
+}
+
+.dep-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dep-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: 11px;
+  color: #374151;
+  background: #f3f4f6;
+  font-size: 0.78rem;
+}
+
+.btn-remove-dep {
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #991b1b;
+  background: #fee2e2;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.task-actions .secondary {
+  color: #4c1d95;
+  background: #ede9fe;
+}
+
+.blocked-msg {
+  color: #991b1b;
+  font-weight: 800;
+}
+
+.fab-add {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  padding: 0;
+  font-size: 28px;
+  box-shadow: 0 18px 35px rgba(37, 99, 235, 0.28);
+}
+
 .overlay-fantasma {
-  position: fixed;        /* Arranca o elemento do fluxo normal */
-  top: 0;                 /* Prega no teto da tela */
-  left: 0;                /* Prega na parede esquerda */
-  width: 100vw;           /* 100% da largura da tela */
-  height: 100vh;          /* 100% da altura da tela */
-  background-color: rgba(0, 0, 0, 0.6); /* Preto com 60% de transparência */
-  z-index: 1000;          /* Joga a camada lá para frente (por cima do Canvas) */
-  
-  /* Usa Flexbox para centralizar a caixa branca perfeitamente no meio da tela */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.62);
+  z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/* O visual da sua "mini tela" */
-.caixa-por-cima {
-  background-color: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Uma sombrinha elegante */
-  text-align: center;
+  padding: 24px;
 }

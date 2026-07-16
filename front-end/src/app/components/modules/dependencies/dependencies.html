@@ -1,39 +1,48 @@
 <div class="tasks-list">
-    <button class="btn_close" (click)="closeTask()"> x </button>
-    <p class="divisor"> ADICIONAR DEPENDÊNCIA</p>
-    
-    @for (tarefa of listaAdd(); track tarefa.id) {
+  <button class="btn_close" (click)="closeTask()">×</button>
+
+  <div class="modal-header">
+    <h2>Gerenciar dependências</h2>
+    <p>{{ tarefa()?.titulo || 'Tarefa' }}</p>
+  </div>
+
+  <p class="divisor">Adicionar dependência</p>
+  @for (tarefa of listaAdd(); track tarefa.id) {
     <div class="task-card" (click)="adicionarDependencia(tarefa)">
-        <div class="task-header">
-                <span class="task-name">{{ tarefa.titulo }}</span>
-                <span class="status-indicator"
-                    [class.green]="tarefa.status === 'FINALIZADO'"
-                    [class.yellow]="tarefa.status === 'EM_ANDAMENTO'"
-                    [class.red]="tarefa.status === 'BLOQUEADO'">
-                </span>
-            </div>
-            <div class="task-body">
-            <span class="task-descript">{{ tarefa.descricao }}</span>
-            </div>
+      <div class="task-header">
+        <span class="task-name">#{{ tarefa.indiceLocal }} - {{ tarefa.titulo }}</span>
+        <span class="status-indicator"
+          [class.green]="tarefa.estado === 'FINALIZADO'"
+          [class.yellow]="tarefa.estado === 'EM_ANDAMENTO'"
+          [class.red]="tarefa.estado === 'BLOQUEADO'">
+        </span>
+      </div>
+      <div class="task-body">
+        <span class="task-descript">{{ tarefa.descricao || 'Sem descrição.' }}</span>
+      </div>
+      <button class="btn-add">Adicionar</button>
     </div>
-    }
+  } @empty {
+    <p class="empty-state">Não há tarefas disponíveis para adicionar.</p>
+  }
 
-    <p class="divisor"> REMOVER DEPENDÊNCIA</p>
-
-    @for (tarefa of listaRem(); track tarefa.id) {
-    <div class="task-card" (click)="removerDependencia(tarefa)">
-        <div class="task-header">
-                <span class="task-name">{{ tarefa.titulo }}</span>
-                <span class="status-indicator"
-                    [class.green]="tarefa.status === 'FINALIZADO'"
-                    [class.yellow]="tarefa.status === 'EM_ANDAMENTO'"
-                    [class.red]="tarefa.status === 'BLOQUEADO'">
-                </span>
-            </div>
-            <div class="task-body">
-            <span class="task-descript">{{ tarefa.descricao }}</span>
-            </div>
+  <p class="divisor">Remover dependência</p>
+  @for (tarefa of listaRem(); track tarefa.id) {
+    <div class="task-card remove" (click)="removerDependencia(tarefa)">
+      <div class="task-header">
+        <span class="task-name">#{{ tarefa.indiceLocal }} - {{ tarefa.titulo }}</span>
+        <span class="status-indicator"
+          [class.green]="tarefa.estado === 'FINALIZADO'"
+          [class.yellow]="tarefa.estado === 'EM_ANDAMENTO'"
+          [class.red]="tarefa.estado === 'BLOQUEADO'">
+        </span>
+      </div>
+      <div class="task-body">
+        <span class="task-descript">{{ tarefa.descricao || 'Sem descrição.' }}</span>
+      </div>
+      <button class="btn-remove">Remover dependência</button>
     </div>
-    }
-
+  } @empty {
+    <p class="empty-state">Esta tarefa ainda não possui dependências.</p>
+  }
 </div>

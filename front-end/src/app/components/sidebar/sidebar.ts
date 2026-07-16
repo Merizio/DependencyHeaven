@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, inject, Output, EventEmitter, Input } from '@angular/core';
 import { TemplateService, Template } from '../../services/template.service';
+import { LoginResponse } from '../../services/auth.service';
 
 export interface TemplateItem extends Template {
   ativo?: boolean;
@@ -13,10 +14,13 @@ export interface TemplateItem extends Template {
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements OnInit {
-  nomeUsuario: string = 'Usuário';
-  templates: TemplateItem[] = [];
+  @Input() usuario: LoginResponse | null = null;
   @Output() templateSelecionado = new EventEmitter<number>();
-  
+  @Output() logoutSolicitado = new EventEmitter<void>();
+
+  templates: TemplateItem[] = [];
+  carregando = false;
+
   private templateService = inject(TemplateService);
 
   ngOnInit() {
@@ -24,14 +28,19 @@ export class Sidebar implements OnInit {
   }
 
   carregarTemplates() {
+    this.carregando = true;
     this.templateService.listarTemplates().subscribe({
       next: (data) => {
         this.templates = data.map(t => ({ ...t, ativo: false }));
+        this.carregando = false;
         if (this.templates.length > 0) {
           this.selecionarTemplate(this.templates[0]);
         }
       },
-      error: (err) => console.error('Erro ao buscar templates', err)
+      error: (err) => {
+        this.carregando = false;
+        console.error('Erro ao buscar templates', err);
+      }
     });
   }
 
@@ -43,9 +52,10 @@ export class Sidebar implements OnInit {
 
   criarTemplate() {
     const nome = prompt('Digite o nome do novo template:');
+    const usuarioId = this.usuario?.id ?? 1;
+
     if (nome && nome.trim().length > 0) {
-      // Usamos usuarioId = 1 para simular o usuário logado
-      this.templateService.criarTemplate(nome, 1).subscribe({
+      this.templateService.criarTemplate(nome.trim(), usuarioId).subscribe({
         next: (novoTemplate) => {
           const t: TemplateItem = { ...novoTemplate, ativo: false };
           this.templates.push(t);
@@ -57,12 +67,16 @@ export class Sidebar implements OnInit {
   }
 
   deleteTemplate(template: TemplateItem, event: Event) {
-    event.stopPropagation(); // Evita que o template seja selecionado ao clicar na lixeira
+    event.stopPropagation();
     if (confirm(`Deseja realmente excluir o projeto "${template.nome}"? Todas as tarefas serão perdidas permanentemente.`)) {
       this.templateService.deleteTemplate(template.id).subscribe({
         next: () => this.carregarTemplates(),
         error: (err) => alert('Erro ao excluir template: ' + (err.error?.erro || err.message))
       });
     }
+  }
+
+  sair(): void {
+    this.logoutSolicitado.emit();
   }
 }

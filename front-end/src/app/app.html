@@ -1,11 +1,18 @@
-<!DOCTYPE html>
+<app-login *ngIf="!usuario" (logado)="onLogado($event)"></app-login>
 
-<div class="layout-container">
-  <app-sidebar (templateSelecionado)="onTemplateSelecionado($event)"></app-sidebar>
+<div *ngIf="usuario" class="layout-container">
+  <app-sidebar
+    [usuario]="usuario"
+    (templateSelecionado)="onTemplateSelecionado($event)"
+    (logoutSolicitado)="logout()">
+  </app-sidebar>
 
   <app-canvas *ngIf="selectedTemplateId" [templateId]="selectedTemplateId"></app-canvas>
   <div *ngIf="!selectedTemplateId" class="no-template-selected">
-    <p>Selecione ou crie um template na barra lateral para começar.</p>
+    <div>
+      <h1>Selecione um template</h1>
+      <p>Escolha ou crie um template na barra lateral para começar.</p>
+    </div>
   </div>
 </div>
 
