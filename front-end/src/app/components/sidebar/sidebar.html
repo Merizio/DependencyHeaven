@@ -1,25 +1,36 @@
 <aside class="sidebar">
   <div class="header">
-    <h2>Paraiso das Dependencias</h2>
+    <div class="logo">Dependency<br />Heaven</div>
     <div class="user-profile">
-      <div class="avatar"></div>
-      <span>{{ nomeUsuario }}</span> 
+      <div class="avatar">{{ usuario?.nome?.charAt(0) || 'U' }}</div>
+      <div>
+        <strong>{{ usuario?.nome || 'Usuário' }}</strong>
+        <small>{{ usuario?.email }}</small>
+      </div>
     </div>
   </div>
 
   <div class="menu-section">
-    <h3>Meus Templates</h3>
+    <div class="section-title">
+      <h3>Meus templates</h3>
+      <span>{{ templates.length }}</span>
+    </div>
+
+    <p *ngIf="carregando" class="empty-state">Carregando...</p>
+    <p *ngIf="!carregando && templates.length === 0" class="empty-state">Nenhum template criado.</p>
+
     <ul class="template-list">
-      <li *ngFor="let t of templates" [class.active]="t.ativo" (click)="selecionarTemplate(t)" style="display: flex; justify-content: space-between; align-items: center;">
-        <span>{{ t.id }} - {{ t.nome }}</span>
-        <button (click)="deleteTemplate(t, $event)" title="Excluir Template" style="background: none; border: none; cursor: pointer; padding: 0;">🗑️</button>
+      <li *ngFor="let t of templates" [class.active]="t.ativo" (click)="selecionarTemplate(t)">
+        <span>{{ t.nome }}</span>
+        <button (click)="deleteTemplate(t, $event)" title="Excluir template">🗑️</button>
       </li>
     </ul>
-    <button class="btn-create" (click)="criarTemplate()">Criar Novo +</button>
+
+    <button class="btn-create" (click)="criarTemplate()">+ Criar novo template</button>
   </div>
 
   <div class="footer-actions">
     <button class="btn-config">Configurações</button>
-    <button class="btn-exit">Sair</button>
+    <button class="btn-exit" (click)="sair()">Sair</button>
   </div>
 </aside>

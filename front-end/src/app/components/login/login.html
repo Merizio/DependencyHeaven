@@ -1,0 +1,27 @@
+<section class="login-page">
+  <div class="login-card">
+    <div class="brand-badge">DH</div>
+    <h1>Dependency Heaven</h1>
+    <p class="subtitle">Organize tarefas, dependências e evolução do seu projeto em um só lugar.</p>
+
+    <form (ngSubmit)="entrar()" class="login-form">
+      <label>
+        E-mail
+        <input type="email" name="email" [(ngModel)]="email" autocomplete="email" />
+      </label>
+
+      <label>
+        Senha
+        <input type="password" name="senha" [(ngModel)]="senha" autocomplete="current-password" />
+      </label>
+
+      <p *ngIf="erro" class="error-message">{{ erro }}</p>
+
+      <button type="submit" [disabled]="carregando">
+        {{ carregando ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <small class="hint">Usuário de teste: teste@example.com / 123456</small>
+  </div>
+</section>

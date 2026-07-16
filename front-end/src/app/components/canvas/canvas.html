@@ -1,77 +1,80 @@
 <main class="canvas-area">
   <div class="canvas-header">
-    <span class="template-title">{{ templateNome }}</span>
+    <div>
+      <small>Template atual</small>
+      <span class="template-title">{{ templateNome }}</span>
+    </div>
+    <button class="header-action" (click)="abrirModalNovaTarefa(null)">+ Nova tarefa</button>
   </div>
 
   <div class="dependency-board">
-    
-    <!-- Loop 1: Desenha as colunas baseadas na matriz do TS -->
-    <div *ngFor="let coluna of colunas" class="dependency-column">
-      
-      <!-- Loop 2: Renderiza os cartões dentro dessa etapa -->
+    <div *ngFor="let coluna of colunas; let i = index" class="dependency-column">
+      <div class="column-title">Etapa {{ i + 1 }}</div>
+
       <div *ngFor="let tarefa of coluna" class="task-card" (click)="abrirModalNovaTarefa(tarefa)">
         <div class="task-header">
           <span class="task-name">#{{ tarefa.indiceLocal }} - {{ tarefa.titulo }}</span>
-          <span class="status-indicator"
-                [ngClass]="{
-                  'green': tarefa.estado === 'FINALIZADO',
-                  'yellow': tarefa.estado === 'EM_ANDAMENTO',
-                  'red': tarefa.estado === 'BLOQUEADO'
-                }">
-          </span>
-          <button class="delete-btn" (click)="deleteTarefa(tarefa)" title="Excluir Tarefa" style="background: none; border: none; cursor: pointer; padding: 0; font-size: 1.1em; margin-left: 8px;">🗑️</button>
+          <div class="task-icons">
+            <span class="status-indicator"
+                  [ngClass]="{
+                    'green': tarefa.estado === 'FINALIZADO',
+                    'yellow': tarefa.estado === 'EM_ANDAMENTO',
+                    'red': tarefa.estado === 'BLOQUEADO'
+                  }">
+            </span>
+            <button class="icon-btn danger" (click)="deleteTarefa(tarefa); $event.stopPropagation()" title="Excluir tarefa">🗑️</button>
+          </div>
         </div>
+
         <div class="task-body">
-          <span class="task-descript">{{ tarefa.descricao }}</span>
+          <span class="task-descript">{{ tarefa.descricao || 'Sem descrição.' }}</span>
         </div>
-        
+
         <div class="task-dependencies" *ngIf="tarefa.dependenciasIds && tarefa.dependenciasIds.length > 0">
-          <small>Depende de:</small>
+          <small>Depende de</small>
           <ul class="dep-list">
             <li *ngFor="let depId of tarefa.dependenciasIds" class="dep-item">
-              {{ getNomeTarefa(depId) }}
-              <button class="btn-remove-dep" (click)="removerDependencia(tarefa, depId)" title="Remover dependência">x</button>
+              <span>{{ getNomeTarefa(depId) }}</span>
+              <button class="btn-remove-dep" (click)="removerDependencia(tarefa, depId); $event.stopPropagation()" title="Remover dependência">Remover</button>
             </li>
           </ul>
         </div>
 
         <div class="task-actions">
-          <button *ngIf="tarefa.estado !== 'BLOQUEADO'" (click)="avancarEstado(tarefa)">
+          <button *ngIf="tarefa.estado !== 'BLOQUEADO'" (click)="avancarEstado(tarefa); $event.stopPropagation()">
             {{ tarefa.estado === 'PENDENTE' ? 'Iniciar' : (tarefa.estado === 'EM_ANDAMENTO' ? 'Finalizar' : 'Reabrir') }}
           </button>
           <span *ngIf="tarefa.estado === 'BLOQUEADO'" class="blocked-msg">Bloqueada</span>
-          <button (click)="adicionarDependencia(tarefa)">+ Dep</button>
+          <button class="secondary" (click)="adicionarDependencia(tarefa); $event.stopPropagation()">+ Dep</button>
         </div>
       </div>
-      
     </div>
-
   </div>
 
-  <button class="fab-add" (click)="abrirModalNovaTarefa(tarefa_click)">+</button>
+  <button class="fab-add" (click)="abrirModalNovaTarefa(null)">+</button>
+
   @if (isTaskModalOpen) {
     <div class="overlay-fantasma" (click)="fecharModalTarefa()">
-        <app-task 
+      <app-task
         [tarefa]="tarefa_click"
         (avisoFechar)="fecharModalTarefa()"
         (taskMod)="receberTarefaMod($event)"
         (avisoLista)="abrirTelaDependencias()"
         (click)="$event.stopPropagation()">
-        </app-task>
+      </app-task>
     </div>
   }
 
   @if (isTelaDependencias) {
     <div class="overlay-fantasma" (click)="fecharListaDependencias()">
       <app-dependencies
-      [tarefa]="tarefa_click"
-      [lista]="tarefas"
-      (avisoFecharLista)="fecharListaDependencias()"
-      (taskAdd)="adicionarDependenciaModal($event)"
-      (taskRem)="removerDependenciaModal($event)"
-      (click)="$event.stopPropagation()">
+        [tarefa]="tarefa_click"
+        [lista]="tarefas"
+        (avisoFecharLista)="fecharListaDependencias()"
+        (taskAdd)="adicionarDependenciaModal($event)"
+        (taskRem)="removerDependenciaModal($event)"
+        (click)="$event.stopPropagation()">
       </app-dependencies>
     </div>
   }
-
 </main>

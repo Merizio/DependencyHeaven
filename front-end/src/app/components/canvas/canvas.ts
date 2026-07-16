@@ -89,11 +89,11 @@ export class Canvas implements OnInit, OnChanges {
 
   abrirModalNovaTarefa(tarefa_: Tarefa | null = null): void {
     this.tarefa_click = tarefa_;
-    this.isTaskModalOpen = !this.isTaskModalOpen;
+    this.isTaskModalOpen = true;
   }
 
   fecharModalTarefa(): void {
-    this.isTaskModalOpen = !this.isTaskModalOpen;
+    this.isTaskModalOpen = false;
     this.tarefa_click = null;
   }
 
@@ -121,31 +121,35 @@ export class Canvas implements OnInit, OnChanges {
   }
 
   abrirTelaDependencias(): void {
-    this.isTelaDependencias = !this.isTelaDependencias;
+    this.isTelaDependencias = true;
   }
 
   fecharListaDependencias(): void {
-    this.isTelaDependencias = !this.isTelaDependencias;
+    this.isTelaDependencias = false;
   }
 
   adicionarDependenciaModal(modified: Tarefa): void {
-    const index = this.tarefas.findIndex(t => t.id === modified.id);
-    if (index !== -1) {
-      this.tarefas[index] = modified;
-      this.organizarPorDependencia();
-      this.cdr.detectChanges();
-      this.tarefa_click = { ...modified };
-    }
+    const antiga = this.tarefas.find(t => t.id === modified.id);
+    const novaDependenciaId = modified.dependenciasIds.find(id => !(antiga?.dependenciasIds || []).includes(id));
+
+    if (!novaDependenciaId) return;
+
+    this.tarefaService.adicionarDependencia(modified.id, novaDependenciaId).subscribe({
+      next: () => this.carregarTarefas(),
+      error: (err) => alert('Erro ao adicionar dependência: ' + (err.error?.erro || err.message))
+    });
   }
 
   removerDependenciaModal(modified: Tarefa): void {
-    const index = this.tarefas.findIndex(t => t.id === modified.id);
-    if (index !== -1) {
-      this.tarefas[index] = modified;
-      this.organizarPorDependencia();
-      this.cdr.detectChanges();
-      this.tarefa_click = { ...modified };
-    }
+    const antiga = this.tarefas.find(t => t.id === modified.id);
+    const dependenciaRemovidaId = (antiga?.dependenciasIds || []).find(id => !modified.dependenciasIds.includes(id));
+
+    if (!dependenciaRemovidaId) return;
+
+    this.tarefaService.removerDependencia(modified.id, dependenciaRemovidaId).subscribe({
+      next: () => this.carregarTarefas(),
+      error: (err) => alert('Erro ao remover dependência: ' + (err.error?.erro || err.message))
+    });
   }
 
   avancarEstado(tarefa: Tarefa) {

@@ -1,101 +1,157 @@
 .sidebar {
-  width: 280;
+  width: 100%;
   height: 100vh;
-  background-color: #494848;
-  color: white;
+  color: #e5e7eb;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 22px;
+  background: linear-gradient(180deg, #111827 0%, #1f2937 55%, #111827 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.header h2 { 
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    margin-top: 0px;
-    line-height: 0.7;
-    padding-left: 25px;
-
-    border-bottom: 2px solid #515151;
-    padding-bottom: 10px; /* Espaço entre o texto e a linha */
-    margin-bottom: 10px;  /* Espaço depois da linha */
-}
-
-h2 {
-    font-style: italic;
-    color: black;
+.logo {
+  color: white;
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 22px;
 }
 
 .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+}
 
-    border-bottom: 2px solid #515151;
-    padding-bottom: 10px; /* Espaço entre o texto e a linha */
-    margin-bottom: 0px;  /* Espaço depois da linha */
+.user-profile strong,
+.user-profile small {
+  display: block;
+}
+
+.user-profile small {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #9ca3af;
+  font-size: 0.76rem;
 }
 
 .avatar {
-    width: 30px;
-    height: 30px;
-    background-color: #d9d9d9;
-    border-radius: 4px; }
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: white;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  font-weight: 900;
+  text-transform: uppercase;
+}
 
-.menu-section h3 { 
-    font-size: 1rem;
-    margin-bottom: 0px;
-    font-weight: 500;
-    margin-top: 5px;
+.menu-section {
+  margin-top: 28px;
+  min-height: 0;
+}
 
-    border-bottom: 2px solid #515151;
-    padding-bottom: 5px; /* Espaço entre o texto e a linha */
-    margin-bottom: 0px;  /* Espaço depois da linha */
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-title h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+}
+
+.section-title span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.2);
+  font-size: 0.75rem;
 }
 
 .template-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0px;
-    padding: 0px;
-    font-size: small;
-    margin-top: 0px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  max-height: calc(100vh - 310px);
+  overflow: auto;
 }
 
 .template-list li {
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
+  cursor: pointer;
+  padding: 12px 12px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.2s ease;
+}
+
+.template-list li:hover,
+.template-list li.active {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .template-list li.active {
-    background-color: rgba(255,255,255,0.2);
+  outline: 1px solid rgba(196, 181, 253, 0.45);
+}
+
+.template-list button {
+  border: 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  border-radius: 10px;
+  padding: 6px 8px;
+  cursor: pointer;
 }
 
 .btn-create {
-  margin-top: 0px;
-  background-color: white;
-  color: #333;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
+  width: 100%;
+  margin-top: 14px;
+  border: 0;
+  color: white;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  padding: 12px 14px;
+  border-radius: 14px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 10px;
+  font-weight: 800;
+}
+
+.empty-state {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
 }
 
 .footer-actions {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 7px; 
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .footer-actions button {
-    background: none;
-    border: 1px solid white;
-    color: white;
-    padding: 8px; 
-    cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 11px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn-exit:hover {
+  background: rgba(239, 68, 68, 0.24);
 }
